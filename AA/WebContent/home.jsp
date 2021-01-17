@@ -131,7 +131,7 @@
 <!-- Navbar (sit on top) -->
 <div class="w3-top w3-midnight w3-padding w3-card">
   
-    <a href="home.html" class="w3-bar-item w3-left"><img src="Images/logo.jpg" width="40" height="40" style="border-radius: 50%;"></a>
+    <a href="home.jsp" class="w3-bar-item w3-left"><img src="Images/logo.jpg" width="40" height="40" style="border-radius: 50%;"></a>
 	<div class="dropdown w3-right">
 	  <button class="dropbtn w3-hide-large w3-hide-medium" onclick="myFunction()">
 	    <div id="menu"></div>
@@ -142,15 +142,15 @@
 	  </button>
 	  <div class="dropdown-content w3-hide-large w3-hide-medium" id="myDropdown" style="right:0">
 		<a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
-		<a href="home.html#about" class="w3-bar-item w3-hover-red w3-button">About</a>
-		<a href="home.html#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-		<a href="home.html#news" class="w3-bar-item w3-hover-red w3-button">News</a>
+		<a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
+		<a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
+		<a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
 	  </div>
 	  <div class="w3-right w3-hide-small">
 	  <a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
-	  <a href="home.html#about" class="w3-bar-item w3-hover-red w3-button">About</a>
-      <a href="home.html#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-      <a href="home.html#news" class="w3-bar-item w3-hover-red w3-button">News</a>
+	  <a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
+      <a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
+      <a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
     </div>
     </div> 
   
@@ -249,8 +249,8 @@
   <div class="w3-row-padding w3-hide-small">
     <div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
-        <a href="unipi.html"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight" >Find flights</div></a>
-        <a href="unipi.html"><img src="Images/flights.jpg" alt="unipi" style="width:100%"></a>
+        <a href="flights.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight" >Find flights</div></a>
+        <a href="fligths.jsp"><img src="Images/flights.jpg" alt="unipi" style="width:100%"></a>
       </div>
     </div>
     <div class="w3-col 12 m2 w3-margin-bottom">
@@ -280,7 +280,7 @@
   </div>
 
 </div>  
-
+	
   
 
   

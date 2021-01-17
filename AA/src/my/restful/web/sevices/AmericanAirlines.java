@@ -94,5 +94,75 @@ public class AmericanAirlines {
 		return("Oops");
 	}
 	
+	@GET
+	@Path("/SearchRoute/{origin}/{destination}")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String searchRoute(@PathParam("origin") String origin,
+			@PathParam("destination") String destination) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT * FROM routes WHERE Source_airport=? AND Destination_airport=?;");
+		ps_number_of_rows.setString(1, origin);
+		ps_number_of_rows.setString(2, destination);
+		ResultSet rs_number_of_rows = ps_number_of_rows.executeQuery();
+		int number_of_rows=0;
+		while(rs_number_of_rows.next())
+		{
+			number_of_rows++;
+		}
+		ps_number_of_rows.close();
+		String[] routes = new String[number_of_rows];
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM routes WHERE Source_airport=? AND Destination_airport=?;");
+		ps.setString(1, origin);
+		ps.setString(2, destination);
+		ResultSet rs = ps.executeQuery();
+		int route_num = 0;
+		while(rs.next())
+		{
+			routes[route_num] = "Airline: "+rs.getString("Airline")+" Source Airport: "+rs.getString("Source_airport")
+					+" Destination Airport: "
+					+rs.getString("Destination_airport")+" Number of stops: "+
+					rs.getString("Stops")+" Available aircraft(s) "+ rs.getString("Equipment")+"\n";
+			route_num++;
+		
+		} 
+		System.out.println(Arrays.asList(routes));
+		return "Available routes: " + Arrays.asList(routes);
+	}
+	
+	@GET
+	@Path("/Test")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String test() throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT * FROM users;");
+		ResultSet rs_number_of_rows = ps_number_of_rows.executeQuery();
+		int number_of_rows=0;
+		while(rs_number_of_rows.next())
+		{
+			number_of_rows++;
+		}
+		ps_number_of_rows.close();
+		String[] routes = new String[number_of_rows];
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM users;");
+		ResultSet rs = ps.executeQuery();
+		int route_num = 0;
+		while(rs.next())
+		{
+			routes[route_num] = "Username: "+rs.getString("username")+" Password: "+rs.getString("Password");
+			route_num++;
+		
+		} 
+		System.out.println(Arrays.asList(routes));
+		return "Users: " + Arrays.asList(routes);
+	}
+	
 	
 }
