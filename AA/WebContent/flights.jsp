@@ -6,7 +6,7 @@
 <%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
-<title>Home | American Airlines</title>
+<title>Flights | American Airlines</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="home.css">
@@ -107,6 +107,20 @@
 	  border: 1px solid #ddd;
 	}
 	
+	table{
+	  border: 1px solid white;
+	  background-color:midnightblue;
+	  color: white;
+	  text-align:center;
+	  border-collapse: collapse;
+	  opacity: 0.9;
+	  margin-left: auto;
+  	  margin-right: auto;
+  	  width:60%;
+	}
+	
+	
+	
 	@media (max-width: 800px) {
 	  .form-inline input {
 	    margin: 10px 0;
@@ -116,6 +130,10 @@
 	    flex-direction: column;
 	    align-items: stretch;
 	  }
+	  
+	  table{
+  	  width:100%;
+	}
 
 
 
@@ -124,14 +142,13 @@
   
   
   
-  
 </head>
-<body>
+<body onload="signedIn()">
 
 <!-- Navbar (sit on top) -->
 <div class="w3-top w3-midnight w3-padding w3-card">
   
-    <a href="home.jsp" class="w3-bar-item w3-left"><img src="Images/logo.jpg" width="40" height="40" style="border-radius: 50%;"></a>
+    <a href="home.jsp" class="w3-bar-item w3-left" onclick="logout()"><img src="Images/logo.jpg" width="40" height="40" style="border-radius: 50%;"></a>
 	<div class="dropdown w3-right">
 	  <button class="dropbtn w3-hide-large w3-hide-medium" onclick="myFunction()">
 	    <div id="menu"></div>
@@ -165,7 +182,7 @@
 </header>
 
 
-  
+  	<div id="signed_in" style="display:none;" >
     <div class="w3-container w3-padding-32">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Search route</h3>
 		<form METHOD="post" class="form-inline">
@@ -173,7 +190,8 @@
 			Destination Airport: <input type="text" name="destination" value="" required>
 			<input type ="submit" name="searchRoute" value ="Search Route" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
 		</form>	
-		
+		<table>
+		<br>
 		<%
 			if(request.getParameter("searchRoute") != null)
 			{
@@ -185,38 +203,57 @@
 				ClientResponse myresponse = webresource.accept("text/plain").get(ClientResponse.class);
 				String output = myresponse.getEntity(String.class);
 				List<String> routeList = Arrays.asList(output.split(","));
-				out.print(routeList.get(0));
+				%><th>Available route information</th><%
+				for (int i=0; i<routeList.size(); i++)
+				{
+					%><tr><td><%out.print(routeList.get(i).replace("[","").replace("]",""));%><tr><td><%
+					
+				}
+				
+				Client client1 = Client.create();
+				WebResource webresource1 = client1.resource("http://localhost:8080/AA/rest/AAService/CalculateDistance/"+origin+"/"+
+						destination);
+				ClientResponse myresponse1 = webresource1.accept("text/plain").get(ClientResponse.class);
+				String output1 = myresponse1.getEntity(String.class);
+				out.print(output1);
 			}
 		%>
+		</table>
 </div> 
 
+	
+
 <div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Search test</h3>
-		<form METHOD="post" class="form-inline">
-			<input type ="submit" name="test" value ="Search test" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Show AA fleet</h3>
+		<form METHOD="post">
+			By clicking this button, you may see all the aircrafts that we operate. 
+			<input type ="submit" name="ShowFleet" value ="Show fleet" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
 		</form>	
-		  
-		<table style="width:100%;background-color:teal;">
+		 
+		<table>
+		<br> 
 		<%
-			if(request.getParameter("test") != null)
-			{
-				String origin = request.getParameter("origin");
-				String destination = request.getParameter("destination");		
+			if(request.getParameter("ShowFleet") != null)
+			{		
 				Client client = Client.create();
-				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/Test");
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/ShowFleet");
 				ClientResponse myresponse = webresource.accept("text/plain").get(ClientResponse.class);
 				String output = myresponse.getEntity(String.class);
-				List<String> testList = Arrays.asList(output.split(","));
-				for (int i=0; i<testList.size(); i++)
+				List<String> fleetList = Arrays.asList(output.split(","));
+				%><th>Aircraft information</th><%
+				for (int i=0; i<fleetList.size(); i++)
 				{
-					%><tr><td><%out.print(testList.get(i));%><tr><td><%
+					%><tr><td><%out.print(fleetList.get(i).replace("[","").replace("]",""));%><tr><td><%
 					
 				}
 				
 			}
 		%>
 		</table>
-</div>   
+</div> 
+
+
+ 
 	
   
 
@@ -226,7 +263,7 @@
 <footer class="w3-center w3-midnight w3-padding-16">
   <a href = "https://github.com/mavrogiorgos" style="text-decoration:none;">Kostis Mavrogiorgos</a> - All rights reserved &copy;
 </footer>
-
+</div> 
 
 
 
@@ -312,6 +349,26 @@ function showMore3() {
     moreText.style.display = "inline";
   }
 }
+
+function logout(){
+	document.cookie = "username=; path=/;";
+}
+
+
+function signedIn() {
+  var x = document.getElementById("signed_in");
+  if(document.cookie.match(/^(.*;)?\s*username\s*=\s*[^;]+(.*)?$/))
+  {
+    x.style.display = "block";
+  }
+  else 
+  {
+	  x.style.display = "none";
+	  window.alert("You need to sign in!");
+  }
+}
+
+
 
 </script>
 

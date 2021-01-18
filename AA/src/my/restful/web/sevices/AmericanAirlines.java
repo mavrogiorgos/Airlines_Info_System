@@ -122,19 +122,23 @@ public class AmericanAirlines {
 		int route_num = 0;
 		while(rs.next())
 		{
-			routes[route_num] = "Airline: "+rs.getString("Airline")+" Source Airport: "+rs.getString("Source_airport")
+			routes[route_num] = "Airline: "+rs.getString("Airline")+" Origin Airport: "+rs.getString("Source_airport")
 					+" Destination Airport: "
 					+rs.getString("Destination_airport")+" Number of stops: "+
 					rs.getString("Stops")+" Available aircraft(s) "+ rs.getString("Equipment")+"\n";
 			route_num++;
 		
 		} 
+		if(route_num==0)
+		{
+			return("No route found.");
+		}
 		System.out.println(Arrays.asList(routes));
-		return "Available routes: " + Arrays.asList(routes);
+		return "" + Arrays.asList(routes);
 	}
 	
 	@GET
-	@Path("/Test")
+	@Path("/ShowFleet")
 	@Produces(MediaType.TEXT_PLAIN)
 	//@Produces("text/plain")
 	public String test() throws SQLException, ClassNotFoundException
@@ -142,7 +146,7 @@ public class AmericanAirlines {
 		Connection conn = null;
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
-		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT * FROM users;");
+		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT * FROM fleet;");
 		ResultSet rs_number_of_rows = ps_number_of_rows.executeQuery();
 		int number_of_rows=0;
 		while(rs_number_of_rows.next())
@@ -150,19 +154,112 @@ public class AmericanAirlines {
 			number_of_rows++;
 		}
 		ps_number_of_rows.close();
-		String[] routes = new String[number_of_rows];
-		PreparedStatement ps = conn.prepareStatement("SELECT * FROM users;");
+		String[] fleet = new String[number_of_rows];
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM fleet;");
 		ResultSet rs = ps.executeQuery();
-		int route_num = 0;
+		int fleet_num = 0;
 		while(rs.next())
 		{
-			routes[route_num] = "Username: "+rs.getString("username")+" Password: "+rs.getString("Password");
-			route_num++;
+			fleet[fleet_num] = "Name: "+rs.getString("Name")+" IATA code: "+rs.getString("IATA_code")
+			+" ICAO  code: "+rs.getString("ICAO_code");
+			fleet_num++;
 		
 		} 
-		System.out.println(Arrays.asList(routes));
-		return "Users: " + Arrays.asList(routes);
+		System.out.println(Arrays.asList(fleet));
+		return "" + Arrays.asList(fleet);
 	}
+	
+	@GET
+	@Path("/AvailableAirports")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String availableAirports() throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT Source_airport FROM fleet;");
+		ResultSet rs_number_of_rows = ps_number_of_rows.executeQuery();
+		int number_of_rows=0;
+		while(rs_number_of_rows.next())
+		{
+			number_of_rows++;
+		}
+		ps_number_of_rows.close();
+		String[] airport = new String[number_of_rows];
+		PreparedStatement ps = conn.prepareStatement("SELECT Source_airport FROM fleet;");
+		ResultSet rs = ps.executeQuery();
+		int airport_num = 0;
+		while(rs.next())
+		{
+			airport[airport_num] = rs.getString("Source_airport");
+			airport_num++;
+		
+		} 
+		System.out.println(Arrays.asList(airport));
+		return "" + Arrays.asList(airport);
+	}
+	
+	
+	@GET
+	@Path("/CalculateDistance/{origin}/{destination}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public static String distFrom(@PathParam("origin") String origin,
+			@PathParam("destination") String destination) throws SQLException, ClassNotFoundException
+	{
+		float lat1 = 0;
+		float lng1 = 0; 
+		float lat2 = 0; 
+		float lng2 = 0;
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement origin_lat_ps = conn.prepareStatement("SELECT Latitude_deg FROM airports WHERE Iata_code=?;");
+		origin_lat_ps.setString(1, origin);
+		ResultSet origin_lat_rs = origin_lat_ps.executeQuery();
+		while(origin_lat_rs.next())
+		{
+			lat1 = origin_lat_rs.getFloat("Latitude_deg");
+		}
+		
+		PreparedStatement origin_lng_ps = conn.prepareStatement("SELECT Longitude_deg FROM airports WHERE Iata_code=?;");
+		origin_lng_ps.setString(1, origin);
+		ResultSet origin_lng_rs = origin_lng_ps.executeQuery();
+		while(origin_lng_rs.next())
+		{
+			lng1 = origin_lng_rs.getFloat("Longitude_deg");
+		}
+		
+		PreparedStatement destination_lat_ps = conn.prepareStatement("SELECT Latitude_deg FROM airports WHERE Iata_code=?;");
+		destination_lat_ps.setString(1, destination);
+		ResultSet destination_lat_rs = destination_lat_ps.executeQuery();
+		while(destination_lat_rs.next())
+		{
+			lat2 = destination_lat_rs.getFloat("Latitude_deg");
+		}
+		
+		PreparedStatement destination_lng_ps = conn.prepareStatement("SELECT Longitude_deg FROM airports WHERE Iata_code=?;");
+		destination_lng_ps.setString(1, destination);
+		ResultSet destination_lng_rs = destination_lng_ps.executeQuery();
+		while(destination_lng_rs.next())
+		{
+			lng2 = destination_lng_rs.getFloat("Longitude_deg");
+		}
+		conn.close();
+		
+		
+	    double earthRadius = 6371000; //meters
+	    double dLat = Math.toRadians(lat2-lat1);
+	    double dLng = Math.toRadians(lng2-lng1);
+	    double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	               Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+	               Math.sin(dLng/2) * Math.sin(dLng/2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	    float dist = (float) (earthRadius * c);
+	    float dist_in_km = dist/1000;
+
+	    return "The distance between the selected airports is: " +dist_in_km+ " kilometers.";
+	    }
 	
 	
 }

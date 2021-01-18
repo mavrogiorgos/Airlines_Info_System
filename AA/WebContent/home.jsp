@@ -232,13 +232,13 @@
 				ClientResponse myresponse = webresource.accept("text/plain").post(ClientResponse.class);
 				String output = myresponse.getEntity(String.class);
 				%>
-				<script type="text/javascript">var username="<%out.print(output);%>";</script>
+				<script type="text/javascript">document.cookie = "username=<%out.print(output);%>;path=/";</script>
 				<% 
 			}
 		%>
 	</div>
 
-
+	
 
 <div id="signed_in" style="display:none;" >
   <!-- Actions Section -->
@@ -431,17 +431,45 @@ function showMore3() {
   }
 }
 
+
+function getCookie(name) {
+    var dc = document.cookie;
+    var prefix = name + "=";
+    var begin = dc.indexOf("; " + prefix);
+    if (begin == -1) {
+        begin = dc.indexOf(prefix);
+        if (begin != 0) return null;
+    }
+    else
+    {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+        end = dc.length;
+        }
+    }
+    // because unescape has been deprecated, replaced with decodeURI
+    //return unescape(dc.substring(begin + prefix.length, end));
+    return decodeURI(dc.substring(begin + prefix.length, end));
+} 
+
+
+
 function signedIn() {
+	  var myCookie = getCookie("username");
 	  var x = document.getElementById("signed_in");
-	  if(username===0)
-	  {
-		  x.style.display = "none";
-	  }
-	  else if(username!==0)
+	  if(document.cookie.match(/^(.*;)?\s*username\s*=\s*[^;]+(.*)?$/))
 	  {
 	    x.style.display = "block";
 	  }
+	  else 
+	  {
+		  x.style.display = "none";
+	  }
 	}
+	
+	
+	
 </script>
 
 
