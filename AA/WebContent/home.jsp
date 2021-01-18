@@ -273,8 +273,8 @@
     </div>
 	<div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
-        <a href="admin.html"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Admin</div></a>
-        <a href="admin.html"><img src="Images/admin.jpeg" alt="byte" style="width:100%"></a>
+        <a href="admin.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Admin</div></a>
+        <a href="admin.jsp"><img src="Images/admin.jpeg" alt="byte" style="width:100%"></a>
       </div>
     </div>
   </div>

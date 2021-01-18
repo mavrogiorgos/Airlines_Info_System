@@ -72,19 +72,21 @@ public class AmericanAirlines {
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		int count = 0;
+		String type = "None";
 		PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM users WHERE username=? AND password=?;");
 		ps1.setString(1, username);
 		ps1.setString(2, password);
 		ResultSet number_of_users = ps1.executeQuery();
 		while(number_of_users.next())
 		{
+			type = number_of_users.getString("type");
 			count++;
 		}
 		System.out.println(count);
 		
 		if(count!=0)
 		{
-			return username;
+			return username +" " +type;
 		}
 		else if(count==0) 
 		{
@@ -261,5 +263,46 @@ public class AmericanAirlines {
 	    return "The distance between the selected airports is: " +dist_in_km+ " kilometers.";
 	    }
 	
+	
+	
+	//---------------------------Administration Services-----------------------------------------
+	
+	
+	@POST
+	@Path("/AddRoute/{source_airport}/{destination_airport}/{stops}/{equipment}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addRoute(@PathParam("source_airport") String source_airport,
+			@PathParam("destination_airport") String destination_airport,
+			@PathParam("stops") String stops,
+			@PathParam("equipment") String equipment) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO routes (Airline, Source_airport, Destination_airport, Stops, Equipment) VALUES (?,?,?,?,?)");
+		ps.setString(1,"AA");
+		ps.setString(2,source_airport);
+		ps.setString(3,destination_airport);
+		ps.setString(4,stops);
+		ps.setString(5,equipment);
+		ps.executeUpdate();
+		return "The route from "+source_airport+" to "+destination_airport+" was successfully added.";
+	}
+	
+	@DELETE
+	@Path("/RemoveRoute/{source_airport}/{destination_airport}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removeRoute(@PathParam("source_airport") String source_airport,
+			@PathParam("destination_airport") String destination_airport) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM routes WHERE Source_airport=? AND Destination_airport=?");
+		ps.setString(1,source_airport);
+		ps.setString(2,destination_airport);
+		ps.executeUpdate();
+		return "The route from "+source_airport+" to "+destination_airport+" was successfully deleted.";
+	}
 	
 }
