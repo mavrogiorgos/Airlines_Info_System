@@ -3,6 +3,7 @@
     <%@ page import ="com.sun.jersey.api.client.Client" %>
 <%@ page import ="com.sun.jersey.api.client.ClientResponse" %>
 <%@ page import ="com.sun.jersey.api.client.WebResource" %>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
 <title>Home | American Airlines</title>
@@ -162,7 +163,32 @@
   <div class="w3-display-middle w3-margin-top w3-center">
     <h1 class="w3-xxlarge "><span class="w3-padding w3-white w3-text-red w3-opacity-min"><b>A</b>merican<span class="w3-text-midnight"><b>A</b>irlines</span></span> </h1>
   </div>
+  <div class="w3-display-top">
+    <span class=" w3-white ">
+     <marquee width="100%" direction="right" onmouseover="this.stop();" onmouseout="this.start();"
+	style="background-color:midnightblue; color:white; padding-top:10px; padding-bottom:10px;"class="w3-opacity-min">
+	<%	
+		Client client3 = Client.create();
+		WebResource webresource3 = client3.resource("http://localhost:8080/AA/rest/AAService/Announcements");
+		ClientResponse myresponse3 = webresource3.accept("text/plain").get(ClientResponse.class);
+		String output3 = myresponse3.getEntity(String.class);
+		List<String> fleetList = Arrays.asList(output3.split(","));
+		for (int i=0; i<fleetList.size(); i++)
+		{
+			out.print(fleetList.get(i).replace("[","").replace("]",""));
+		}
+	%>
+</marquee>
+
+    
+    </span> 
+  </div>
 </header>
+
+
+
+
+
 
 
 
@@ -255,8 +281,8 @@
     </div>
     <div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
-        <a href="ekpa.html"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Book a flight</div></a>
-        <a href="ekpa.html"><img src="Images/book.jpg" alt="uoa" style="width:100%"></a>
+        <a href="book.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Book a flight</div></a>
+        <a href="book.jsp"><img src="Images/book.jpg" alt="uoa" style="width:100%"></a>
       </div>
     </div>
     <div class="w3-col 12 m2 w3-margin-bottom">

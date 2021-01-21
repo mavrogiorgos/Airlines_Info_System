@@ -186,8 +186,8 @@
     <div class="w3-container w3-padding-32">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Search route</h3>
 		<form METHOD="post" class="form-inline">
-			Origin Airport: <input type="text" name="origin" value="" required>
-			Destination Airport: <input type="text" name="destination" value="" required>
+			Origin Airport: <input type="text" name="origin" value="" maxlength=3 required>
+			Destination Airport: <input type="text" name="destination" value="" maxlength=3 required>
 			<input type ="submit" name="searchRoute" value ="Search Route" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
 		</form>	
 		<table>

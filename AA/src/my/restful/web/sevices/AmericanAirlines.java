@@ -86,7 +86,7 @@ public class AmericanAirlines {
 		
 		if(count!=0)
 		{
-			return username +" " +type;
+			return ""+username;
 		}
 		else if(count==0) 
 		{
@@ -262,6 +262,150 @@ public class AmericanAirlines {
 
 	    return "The distance between the selected airports is: " +dist_in_km+ " kilometers.";
 	    }
+	
+	
+	
+	@GET
+	@Path("/CalculateCost/{origin}/{destination}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public static String calculateCost(@PathParam("origin") String origin,
+			@PathParam("destination") String destination) throws SQLException, ClassNotFoundException
+	{
+		float lat1 = 0;
+		float lng1 = 0; 
+		float lat2 = 0; 
+		float lng2 = 0;
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement origin_lat_ps = conn.prepareStatement("SELECT Latitude_deg FROM airports WHERE Iata_code=?;");
+		origin_lat_ps.setString(1, origin);
+		ResultSet origin_lat_rs = origin_lat_ps.executeQuery();
+		while(origin_lat_rs.next())
+		{
+			lat1 = origin_lat_rs.getFloat("Latitude_deg");
+		}
+		
+		PreparedStatement origin_lng_ps = conn.prepareStatement("SELECT Longitude_deg FROM airports WHERE Iata_code=?;");
+		origin_lng_ps.setString(1, origin);
+		ResultSet origin_lng_rs = origin_lng_ps.executeQuery();
+		while(origin_lng_rs.next())
+		{
+			lng1 = origin_lng_rs.getFloat("Longitude_deg");
+		}
+		
+		PreparedStatement destination_lat_ps = conn.prepareStatement("SELECT Latitude_deg FROM airports WHERE Iata_code=?;");
+		destination_lat_ps.setString(1, destination);
+		ResultSet destination_lat_rs = destination_lat_ps.executeQuery();
+		while(destination_lat_rs.next())
+		{
+			lat2 = destination_lat_rs.getFloat("Latitude_deg");
+		}
+		
+		PreparedStatement destination_lng_ps = conn.prepareStatement("SELECT Longitude_deg FROM airports WHERE Iata_code=?;");
+		destination_lng_ps.setString(1, destination);
+		ResultSet destination_lng_rs = destination_lng_ps.executeQuery();
+		while(destination_lng_rs.next())
+		{
+			lng2 = destination_lng_rs.getFloat("Longitude_deg");
+		}
+		conn.close();
+		
+		
+	    double earthRadius = 6371000; //meters
+	    double dLat = Math.toRadians(lat2-lat1);
+	    double dLng = Math.toRadians(lng2-lng1);
+	    double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	               Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+	               Math.sin(dLng/2) * Math.sin(dLng/2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	    float dist = (float) (earthRadius * c);
+	    float dist_in_km = dist/1000;
+	    
+	    double cost = Math.floor(dist_in_km/10);
+	    return ""+cost;
+	    }
+	
+	
+	
+	
+	@POST
+	@Path("/Book/{username}/{email}/{ddate}/{origin}/{destination}"
+			+ "/{card_num}/{cvv}/{cost}")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String book(@PathParam("username") String username,
+			 @PathParam("email") String email
+			, @PathParam("ddate") String ddate, @PathParam("origin") String origin
+			, @PathParam("destination") String destination, @PathParam("card_num") String card_num, 
+			@PathParam("cvv") String cvv
+			, @PathParam("cost") String cost) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO bookings (username, email"
+				+ ", ddate, origin, destination, card_num, cvv, cost) VALUES (?,?,?,?,?,?,?,?)");
+		ps.setString(1,username);
+		ps.setString(2,email);
+		ps.setString(3,ddate);
+		ps.setString(4,origin);
+		ps.setString(5,destination);
+		ps.setString(6,card_num);
+		ps.setString(7,cvv);
+		ps.setString(8,cost);
+		ps.executeUpdate();
+		conn.close();
+		return(username+", your seat is booked!");
+	}
+	
+	
+	
+	
+	
+	
+	@GET
+	@Path("/Announcements")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String announcements() throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT announcement FROM announcements;");
+		ResultSet rs_number_of_rows = ps_number_of_rows.executeQuery();
+		int number_of_rows=0;
+		while(rs_number_of_rows.next())
+		{
+			number_of_rows++;
+		}
+		ps_number_of_rows.close();
+		String[] announcements = new String[number_of_rows];
+		PreparedStatement ps = conn.prepareStatement("SELECT announcement FROM announcements;");
+		ResultSet rs = ps.executeQuery();
+		int announcements_num = 0;
+		while(rs.next())
+		{
+			announcements[announcements_num] = rs.getString("announcement");
+			announcements_num++;
+		
+		} 
+		System.out.println(Arrays.asList(announcements));
+		return "" + Arrays.asList(announcements);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
