@@ -4,6 +4,12 @@
 <%@ page import ="com.sun.jersey.api.client.ClientResponse" %>
 <%@ page import ="com.sun.jersey.api.client.WebResource" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.DriverManager" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.util.Arrays" %>
 <!DOCTYPE html>
 <html>
 <title>Administration | American Airlines</title>
@@ -143,7 +149,7 @@
   
   
 </head>
-<body onload="signedIn()">
+<body onload="signedIn();">
 
 <!-- Navbar (sit on top) -->
 <div class="w3-top w3-midnight w3-padding w3-card">
@@ -160,6 +166,8 @@
     <h1 class="w3-xxlarge "><span class="w3-padding w3-white w3-text-red w3-opacity-min"><b>A</b>merican<span class="w3-text-midnight"><b>A</b>irlines</span></span> </h1>
   </div>
 </header>
+
+
 
 
   	<div id="signed_in" style="display:none;" >
@@ -220,6 +228,79 @@
 </div> 
 
 
+
+<div class="w3-container w3-padding-32">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Add Announcement</h3>
+		<form METHOD="post" class="form-inline">
+			Name: <input type="text" name="aname" value="" required>
+			Announcement: <input type="text" name="announcement" value="" required>
+			<input type ="submit" name="addAnnouncement" value ="Add Announcement" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		<table>
+		<br>
+		<%
+			if(request.getParameter("addAnnouncement") != null)
+			{
+				String aname = request.getParameter("aname");
+				String announcement = request.getParameter("announcement");	
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/AddAnnouncement/"+aname+"/"+
+						announcement);
+				ClientResponse myresponse = webresource.accept("text/plain").post(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
+
+
+<div class="w3-container w3-padding-32">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Remove Announcement</h3>
+		<form METHOD="post" class="form-inline">
+			Name: <input type="text" name="aname" value="" required>
+			<input type ="submit" name="removeAnnouncement" value ="Remove Announcement" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		<table>
+		<br>
+		<%
+			if(request.getParameter("removeAnnouncement") != null)
+			{
+				String aname = request.getParameter("aname");	
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/RemoveAnnouncement/"+aname);
+				ClientResponse myresponse = webresource.accept("text/plain").delete(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
+
+
+<div class="w3-container w3-padding-32">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Promote or Demote a User (types: "simple" or "admin")</h3>
+		<form METHOD="post" class="form-inline">
+			Username: <input type="text" name="username" value="" required>
+			New User Type: <input type="text" name="usertype" pattern="^(simple|admin).*$" value="" required>
+			<input type ="submit" name="chageType" value ="Change user type" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		<table>
+		<br>
+		<%
+			if(request.getParameter("chageType") != null)
+			{
+				String username = request.getParameter("username");
+				String type = request.getParameter("usertype");	
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/ChangeType/"+username+"/"+type);
+				ClientResponse myresponse = webresource.accept("text/plain").put(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
  
 	
   
@@ -319,6 +400,7 @@ function showMore3() {
 
 function logout(){
 	document.cookie = "username=; path=/;";
+	document.cookie = "type=; path=/;";
 }
 
 
@@ -335,6 +417,44 @@ function signedIn() {
   }
 }
 
+
+
+function setCookie(cname,cvalue,exdays) {
+	  var d = new Date();
+	  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	  var expires = "expires=" + d.toGMTString();
+	  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	function getCookie(cname) {
+	  var name = cname + "=";
+	  var decodedCookie = decodeURIComponent(document.cookie);
+	  var ca = decodedCookie.split(';');
+	  for(var i = 0; i < ca.length; i++) {
+	    var c = ca[i];
+	    while (c.charAt(0) == ' ') {
+	      c = c.substring(1);
+	    }
+	    if (c.indexOf(name) == 0) {
+	      return c.substring(name.length, c.length);
+	    }
+	  }
+	  return "";
+	}
+
+	function checkCookie() {
+	  var user=getCookie("username");
+	  var cost=getCookie("cost");
+	  var origin=getCookie("origin");
+	  var destination=getCookie("destination");
+	  if (user != "") {
+		  document.getElementById('username').value=user;
+	  } 
+	}
+	
+	function isadmin(){
+		  document.isadmin.submit();
+		}
 </script>
 
 

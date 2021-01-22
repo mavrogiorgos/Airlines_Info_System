@@ -352,6 +352,7 @@ function showMore3() {
 
 function logout(){
 	document.cookie = "username=; path=/;";
+	document.cookie = "type=; path=/;";
 }
 
 

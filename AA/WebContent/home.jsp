@@ -197,7 +197,7 @@
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">About us</h3>
 	
     <div style=" text-align: justify; text-justify: inter-word; overflow: hidden;" class="w3-mobile">American Airlines, Inc. (AA) 
-		is a major American airline headquartered in Fort Worth, Texas, within the Dallas–Fort Worth metroplex. 
+		is a major American airline headquartered in Fort Worth, Texas, within the Dallas-Fort Worth metroplex. 
 		We are the world's largest airline 
 		when measured by fleet size, scheduled passengers carried, and revenue passenger mile. American, 
 		together <span id="dots">...</span><span id="more">  with our regional partners, operates an extensive international and domestic network with almost 6,800 flights per day to 
@@ -260,6 +260,15 @@
 				%>
 				<script type="text/javascript">document.cookie = "username=<%out.print(output);%>;path=/";</script>
 				<% 
+				
+				Client client1 = Client.create();
+				WebResource webresource1 = client1.resource("http://localhost:8080/AA/rest/AAService/CheckType/"+username);
+				ClientResponse myresponse1 = webresource1.accept("text/plain").post(ClientResponse.class);
+				String output1 = myresponse1.getEntity(String.class);
+								%>
+				<script type="text/javascript">document.cookie = "type=<%out.print(output1);%>;path=/";</script>
+				<% 
+				
 			}
 		%>
 	</div>
@@ -268,11 +277,11 @@
 
 <div id="signed_in" style="display:none;" >
   <!-- Actions Section -->
-  <div class="w3-container w3-padding-32 w3-hide-small" id="actions">
+  <div class="w3-container w3-padding-32 " id="actions">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">What would you like to do?</h3>
   </div>
 
-  <div class="w3-row-padding w3-hide-small">
+  <div class="w3-row-padding ">
     <div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
         <a href="flights.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight" >Find flights</div></a>
@@ -298,7 +307,7 @@
       </div>
     </div>
 	<div class="w3-col 12 m2 w3-margin-bottom">
-      <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
+      <div class="w3-display-container" style="border-style: solid; border-color: midnightblue; display:none;" id="admintab">
         <a href="admin.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Admin</div></a>
         <a href="admin.jsp"><img src="Images/admin.jpeg" alt="byte" style="width:100%"></a>
       </div>
@@ -483,14 +492,22 @@ function getCookie(name) {
 
 function signedIn() {
 	  var myCookie = getCookie("username");
+	  var adminCookie = getCookie("type");
 	  var x = document.getElementById("signed_in");
-	  if(document.cookie.match(/^(.*;)?\s*username\s*=\s*[^;]+(.*)?$/))
+	  var y = document.getElementById("admintab");
+	  if(adminCookie==="simple")
 	  {
-	    x.style.display = "block";
+		  x.style.display = "block";
+			y.style.display = "block";
 	  }
-	  else 
+	  if(adminCookie==="admin")
 	  {
-		  x.style.display = "none";
+		x.style.display = "block";
+		y.style.display = "block";
+	  }
+	  else
+	  {
+		  y.style.display = "none";
 	  }
 	}
 	

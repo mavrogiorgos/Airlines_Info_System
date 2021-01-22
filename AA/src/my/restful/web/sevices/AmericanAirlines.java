@@ -10,6 +10,7 @@ import java.util.Arrays;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -404,6 +405,42 @@ public class AmericanAirlines {
 	
 	
 	
+	@POST
+	@Path("/CheckType/{username}")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String checkType(@PathParam("username") String username) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		int count = 0;
+		PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM users WHERE username=? AND type=?;");
+		ps1.setString(1, username);
+		ps1.setString(2, "admin");
+		ResultSet number_of_users = ps1.executeQuery();
+		while(number_of_users.next())
+		{
+			count++;
+		}
+		System.out.println(count);
+		
+		if(count!=0)
+		{
+			return "admin";
+		}
+		else if(count==0) 
+		{
+			return "simple";
+		}
+		conn.close();
+		return("Oops");
+	}
+	
+	
+	
+	
+	
 	
 	
 	
@@ -448,5 +485,60 @@ public class AmericanAirlines {
 		ps.executeUpdate();
 		return "The route from "+source_airport+" to "+destination_airport+" was successfully deleted.";
 	}
+	
+	
+	@POST
+	@Path("/AddAnnouncement/{aname}/{announcement}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addAnnouncement(@PathParam("aname") String aname,
+			@PathParam("announcement") String announcement) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO announcements (name, announcement) VALUES (?,?)");
+		ps.setString(1,aname);
+		ps.setString(2,announcement);
+		ps.executeUpdate();
+		return "The announcement named "+aname+" was successfully added.";
+	}
+	
+	
+	
+	@DELETE
+	@Path("/RemoveAnnouncement/{aname}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removeAnnouncement(@PathParam("aname") String aname) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM announcements WHERE name=?");
+		ps.setString(1,aname);
+		ps.executeUpdate();
+		return "The announcement named "+aname+" was successfully removed.";
+	}
+	
+	
+	@PUT 
+	@Path("/ChangeType/{username}/{type}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String changeType(@PathParam("username") String username,
+			@PathParam("type") String type) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("UPDATE users SET type=? WHERE username=?");
+		ps.setString(1,type);
+		ps.setString(2,username);
+		ps.executeUpdate();
+		return "The type of the user named "+username+" was successfully changed to: "+type;
+	}
+	
+	
+	
+	
+	
 	
 }

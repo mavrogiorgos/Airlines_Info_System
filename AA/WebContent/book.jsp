@@ -589,6 +589,10 @@ function showMore3() {
 
 function logout(){
 	document.cookie = "username=; path=/;";
+	document.cookie = "type=; path=/;";
+	document.cookie = "cost=; path=/;";
+	document.cookie = "origin=; path=/;";
+	document.cookie = "destination=; path=/;";
 }
 
 
