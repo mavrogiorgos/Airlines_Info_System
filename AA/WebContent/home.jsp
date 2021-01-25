@@ -285,31 +285,31 @@
     <div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
         <a href="flights.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight" >Find flights</div></a>
-        <a href="fligths.jsp"><img src="Images/flights.jpg" alt="unipi" style="width:100%"></a>
+        <a href="fligths.jsp"><img src="Images/flights.jpg" alt="findflights" style="width:100%"></a>
       </div>
     </div>
     <div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
         <a href="book.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Book a flight</div></a>
-        <a href="book.jsp"><img src="Images/book.jpg" alt="uoa" style="width:100%"></a>
+        <a href="book.jsp"><img src="Images/book.jpg" alt="book" style="width:100%"></a>
       </div>
     </div>
     <div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
-        <a href="pada.html"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Check in</div></a>
-        <a href="pada.html"><img src="Images/checkin.jpg" alt="uniwa" style="width:100%"></a>
+        <a href="checkin.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Check in</div></a>
+        <a href="checkin.jsp"><img src="Images/checkin.jpg" alt="checkin" style="width:100%"></a>
       </div>
     </div>
     <div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue;">
-        <a href="bio.html"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">My trips</div><a>
-        <a href="bio.html"><img src="Images/trips.jpg" alt="bioassist" style="width:100%"></a>
+        <a href="trips.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">My Trips</div><a>
+        <a href="trips.jsp"><img src="Images/trips.jpg" alt="bioassist" style="width:100%"></a>
       </div>
     </div>
 	<div class="w3-col 12 m2 w3-margin-bottom">
       <div class="w3-display-container" style="border-style: solid; border-color: midnightblue; display:none;" id="admintab">
         <a href="admin.jsp"><div class="w3-display-topleft w3-red w3-padding w3-hover-midnight">Admin</div></a>
-        <a href="admin.jsp"><img src="Images/admin.jpeg" alt="byte" style="width:100%"></a>
+        <a href="admin.jsp"><img src="Images/admin.jpeg" alt="admin" style="width:100%"></a>
       </div>
     </div>
   </div>

@@ -12,7 +12,7 @@
 <%@ page import="java.util.Arrays" %>
 <!DOCTYPE html>
 <html>
-<title>Book | American Airlines</title>
+<title>My Trips | American Airlines</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="home.css">
@@ -165,29 +165,7 @@
   border-radius: 3px;
 }
 
-input[type=text] {
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
 
-input[type=date] {
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-select{
-width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
 
 label {
   margin-bottom: 10px;
@@ -292,197 +270,36 @@ span.price {
 </header>
 
 
-  	<div id="signed_in" style="display:none;" >
-    <div class="w3-container w3-padding-32">
-	 
-	<h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Calculate Cost</h3>
-	<script>
-	function origin()
-	{
-		var origin1 = document.getElementById("airport1");
-		var airport1 = origin1.value;
-		document.getElementById("origin1").value = airport1;
-		alert("lala");
-	}
-	 
-	function destination()
-	{
-		var origin2 = document.getElementById("airport2");
-		var airport2 = origin2.value;
-		document.getElementById("destination1").value = airport2; 
-	}
-	</script>
-	<div class="container">
-		<form METHOD="post" class="form-inline">     
-	        <label for="state"><i class="fa fa-plane"></i> Origin Airport</label>
-	        <select name="airport1" id = "airport1" onchange="origin();" required>
-			<%
-			String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-			String DB_URL = "jdbc:mysql://localhost/aa?autoReconnect=true&useSSL=false";
-			String USER ="kostis";
-			String PASS ="";
-			Connection conn = null;
-			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection(DB_URL,USER,PASS);
-			PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT Source_airport FROM routes;");
-			ResultSet rs = ps.executeQuery();
-			%><option selected="selected">-</option><%
-			while(rs.next())
-			{
-				%><option value="<%out.print(rs.getString("Source_airport"));%>"><%out.print(rs.getString("Source_airport"));%></option><%
-			}
-			
-			%>
-			</select>
-	          
-	           
-	             <label for="zip"><i class="fa fa-plane"></i> Destination Airport</label>
-	             <select name="airport2" id = "airport2" onchange="destination();" required>
-			<%
-			PreparedStatement ps1 = conn.prepareStatement("SELECT DISTINCT Destination_airport FROM routes;");
-			ResultSet rs1 = ps1.executeQuery();
-			%><option selected="selected">-</option><%
-			while(rs1.next())
-			{
-				%><option value="<%out.print(rs1.getString("Destination_airport"));%>"><%out.print(rs1.getString("Destination_airport"));%></option><%
-			}
-			
-			%>
-			</select>
-			<input type ="submit" name="calculateCost" value ="Calculate Cost" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
-		</form>
-	</div>
-	
-		<br>
-		<%
-			if(request.getParameter("calculateCost") != null)
-			{
-				String origin = request.getParameter("airport1");
-				String destination = request.getParameter("airport2");		
-				Client client1 = Client.create();
-				WebResource webresource1 = client1.resource("http://localhost:8080/AA/rest/AAService/CalculateCost/"+origin+"/"+
-						destination);
-				ClientResponse myresponse1 = webresource1.accept("text/plain").get(ClientResponse.class);
-				String output1 = myresponse1.getEntity(String.class);
-				out.print(output1);
-				%>
-				<script type="text/javascript">document.cookie = "cost=<%out.print(output1);%>;path=/";
-				document.cookie = "origin=<%out.print(origin);%>;path=/";
-				document.cookie = "destination=<%out.print(destination);%>;path=/";
-				</script>
-				<% 
-			}
-		%>
-	
-	
-	
-	<h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Flight Booking</h3>
-	<div class="row">
-  <div class="col-75">
-    <div class="container">
-      <form METHOD="post">
+<div id="signed_in" style="display:none;" >
 
-        <div class="row">
-          <div class="col-50">
-            <h3>Personal info</h3>
-            <label for="fname"><i class="fa fa-user"></i> Username</label>
-            <input type="text" id="username" name="username" placeholder="" maxlength="20" readonly="readonly" required>
-            <label for="email"><i class="fa fa-envelope"></i> Email</label>
-            <input type="text" id="email" name="email" placeholder="komav@unip.gr" required>
-            <label for="date"><i class="fa fa-calendar"></i> Departure Date</label>
-            <input type="text" id="ddate" name="ddate" placeholder="dd-mm-yyyy" pattern="\d{1,2}-\d{1,2}-\d{4}" maxlength="10" required>
-            <label for="fname"><i class="fa fa-plane"></i> Origin Airport</label>
-            <input type="text" name="origin" value="" id ="origin" readonly="readonly">
-            <label for="fname"><i class="fa fa-plane"></i> Destination Airport</label>
-			<input type="text" name="destination" value="" id ="destination" readonly="readonly">  
-          </div>
-
-
-
-          <div class="col-50">
-            <h3>Payment</h3>
-            <label for="fname">Accepted Cards</label>
-            <div class="icon-container">
-              <i class="fa fa-cc-visa" style="color:navy;"></i>
-              <i class="fa fa-cc-amex" style="color:blue;"></i>
-              <i class="fa fa-cc-mastercard" style="color:red;"></i>
-              <i class="fa fa-cc-discover" style="color:orange;"></i>
-            </div>
-            <label for="ccnum">Credit card number</label>
-            <input type="text" id="card_num" name="card_num" placeholder="1111222233334444" pattern="[0-9]{13,16}" required>
-
-            <div class="row">
-              <div class="col-50">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="cvv" placeholder="352" minlength="3" maxlength="4" required>
-                <label for="fname"><i class="fa fa-money"></i> Cost</label>
-				<input type="text" name="cost" value="" id ="cost" required readonly="readonly">
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <input type="submit" value="Book my seat!" name="book" class="btn">
-      </form>
-      <%
-			if(request.getParameter("book") != null)
-			{
-				String username = request.getParameter("username");
-				String email = request.getParameter("email");
-				String ddate = request.getParameter("ddate");
-				String origin = request.getParameter("origin");
-				String destination = request.getParameter("destination");
-				String card_num = request.getParameter("card_num");
-				String cvv = request.getParameter("cvv");
-				String cost = request.getParameter("cost");			
-				Client client1 = Client.create();
-				WebResource webresource1 = client1.resource("http://localhost:8080/AA/rest/AAService/Book/"+username+"/"+
-						email+"/"+ddate+"/"+origin+"/"+destination+"/"+card_num+"/"
-						+cvv+"/"+cost);
-				ClientResponse myresponse1 = webresource1.accept("text/plain").post(ClientResponse.class);
-				String output1 = myresponse1.getEntity(String.class);
-				out.println(output1);
-			}
-		%>
-    </div>
-  </div>
-
-</div>
-	
-	
-	
-	
-	</div> 
-
-
-
-
-					
 					
 <div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Show AA fleet</h3>
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Show Boarding Number</h3>
     
-		<form METHOD="post">
-			By clicking this button, you may see all the aircrafts that we operate. 
-			<input type ="submit" name="ShowFleet" value ="Show fleet" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		<form METHOD="post" class="form-inline">
+			Username: <input type="text" name="username" id ="username" value="" readonly="readonly" required>
+			Date: <input type="text" name="date" placeholder="dd-mm-yyyy" pattern="\d{1,2}-\d{1,2}-\d{4}" maxlength="10" value="" required>
+			Origin: <input type="text" name="origin" value="" maxlength=3 size=3 required>
+			Destination: <input type="text" name="destination" value="" maxlength=3 size=3 required>
+			<input type ="submit" name="ShowBoardingNumber" value ="Remind me" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
 		</form>	
 		 
 		<table>
 		<br> 
 		<%
-			if(request.getParameter("ShowFleet") != null)
+			if(request.getParameter("ShowBoardingNumber") != null)
 			{		
+				String username = request.getParameter("username");
+				String date = request.getParameter("date");
+				String origin = request.getParameter("origin");
+				String destination = request.getParameter("destination");
 				Client client = Client.create();
-				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/ShowFleet");
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/ShowBoardingNumber/"+username+"/"+
+						date+"/"+origin+"/"+destination);
 				ClientResponse myresponse = webresource.accept("text/plain").get(ClientResponse.class);
 				String output = myresponse.getEntity(String.class);
-				List<String> fleetList = Arrays.asList(output.split(","));
-				%><th>Aircraft information</th><%
-				for (int i=0; i<fleetList.size(); i++)
-				{
-					%><tr><td><%out.print(fleetList.get(i).replace("[","").replace("]",""));%><tr><td><%
-					
-				}
+				%><tr><td><%out.print(output);%><tr><td><%
+				
 				
 			}
 		%>

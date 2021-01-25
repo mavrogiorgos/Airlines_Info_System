@@ -1,11 +1,14 @@
 package my.restful.web.sevices;
 
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Random;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,6 +18,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @Path("AAService")
 public class AmericanAirlines {
@@ -346,7 +354,7 @@ public class AmericanAirlines {
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO bookings (username, email"
-				+ ", ddate, origin, destination, card_num, cvv, cost) VALUES (?,?,?,?,?,?,?,?)");
+				+ ", ddate, origin, destination, card_num, cvv, cost, checked_in) VALUES (?,?,?,?,?,?,?,?,?)");
 		ps.setString(1,username);
 		ps.setString(2,email);
 		ps.setString(3,ddate);
@@ -355,6 +363,7 @@ public class AmericanAirlines {
 		ps.setString(6,card_num);
 		ps.setString(7,cvv);
 		ps.setString(8,cost);
+		ps.setString(9,"NO");
 		ps.executeUpdate();
 		conn.close();
 		return(username+", your seat is booked!");
@@ -435,6 +444,104 @@ public class AmericanAirlines {
 		}
 		conn.close();
 		return("Oops");
+	}
+	
+	
+	@POST
+	@Path("/Checkin/{username}/{date}/{origin}/{destination}")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String checkin(@PathParam("username") String username,@PathParam("date") String date
+			,@PathParam("origin") String origin,@PathParam("destination") String destination) throws SQLException, ClassNotFoundException, ParseException 
+	{
+		//create boarding number to return if check in is successful
+		char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+		Random rnd = new Random();
+		StringBuilder sb = new StringBuilder((100000 + rnd.nextInt(900000)) + "-");
+		for (int i = 0; i < 5; i++)
+		    sb.append(chars[rnd.nextInt(chars.length)]);
+		 
+	    
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");  
+	    LocalDateTime now = LocalDateTime.now();  
+	    String currentDate = dtf.format(now); 
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM bookings WHERE username=? AND ddate=? AND origin=?"
+				+ "AND destination=?;");
+		ps1.setString(1, username);
+		ps1.setString(2, date);
+		ps1.setString(3, origin);
+		ps1.setString(4, destination);
+		ResultSet number_of_users = ps1.executeQuery();
+		while(number_of_users.next())
+		{
+			SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+			String bookedDate = number_of_users.getString("ddate");
+			Date date1 = format.parse(currentDate);
+		    Date date2 = format.parse(bookedDate);
+		    if ((date1.compareTo(date2) <= 0) && number_of_users.getString("checked_in").contentEquals("NO")) {
+		    	PreparedStatement ps2 = conn.prepareStatement("UPDATE bookings SET checked_in=?, boarding_num=? WHERE username=? AND ddate=? AND origin=?"
+						+ "AND destination=?;");
+		    	ps2.setString(1, "YES");
+				ps2.setString(2, sb.toString());
+		    	ps2.setString(3, username);
+				ps2.setString(4, date);
+				ps2.setString(5, origin);
+				ps2.setString(6, destination);
+				ps2.executeUpdate();
+		        return "Your check in is successfull. Your boarding number is "+sb.toString()+". It will be available in My Trips section in case you forget it.";
+		    }
+		    else return "You either have not booked this flight or you have already checked in. Please check your booked flights.";
+		}
+		conn.close();
+		return("Oops");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@GET
+	@Path("/ShowBoardingNumber/{username}/{date}/{origin}/{destination}")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String showBoardingNumber(@PathParam("username") String username,@PathParam("date") String date
+			,@PathParam("origin") String origin,@PathParam("destination") String destination) throws SQLException, ClassNotFoundException, ParseException 
+	{
+		int count = 0;
+		String boarding_num = null;
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps1 = conn.prepareStatement("SELECT boarding_num FROM bookings WHERE username=? AND ddate=? AND origin=?"
+				+ "AND destination=?;");
+		ps1.setString(1, username);
+		ps1.setString(2, date);
+		ps1.setString(3, origin);
+		ps1.setString(4, destination);
+		ResultSet number_of_users = ps1.executeQuery();
+		while(number_of_users.next())
+		{
+		    boarding_num = number_of_users.getString("boarding_num");
+		    count++;
+		}
+		conn.close();
+		if(count == 0 )
+		{
+			return "It looks like you have not booked or checked in.";
+		}
+		else if (count == 1)
+		{
+			return "Your boarding number is: "+boarding_num;
+		}
+		else return "Something went wrong.";
+		
 	}
 	
 	
