@@ -162,9 +162,6 @@
 <!-- Header -->
 <header class="w3-display-container w3-content w3-wide" style="max-width:100%;" id="home">
   <img class="w3-image" src="Images/american.jpg" alt="Health" width="100%" height="auto">
-  <div class="w3-display-middle w3-margin-top w3-center">
-    <h1 class="w3-xxlarge "><span class="w3-padding w3-white w3-text-red w3-opacity-min"><b>A</b>merican<span class="w3-text-midnight"><b>A</b>irlines</span></span> </h1>
-  </div>
 </header>
 
 
@@ -276,6 +273,34 @@
 		%>
 		</table>
 </div> 
+
+
+
+
+<div class="w3-container w3-padding-32">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Remove Comment</h3>
+		<form METHOD="post" class="form-inline">
+			Comment ID: <input type="number" name="commentID" value="" required>
+			<input type ="submit" name="removeComment" value ="Remove Comment" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		<table>
+		<br>
+		<%
+			if(request.getParameter("removeComment") != null)
+			{
+				int commentID = Integer.parseInt(request.getParameter("commentID"));	
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/RemoveComment/"+commentID);
+				ClientResponse myresponse = webresource.accept("text/plain").delete(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
+
+
+
 
 
 <div class="w3-container w3-padding-32">

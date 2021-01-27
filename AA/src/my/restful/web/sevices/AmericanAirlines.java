@@ -548,6 +548,107 @@ public class AmericanAirlines {
 	
 	
 	
+	@GET
+	@Path("/ShowTrips/{username}")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String showTrips(@PathParam("username") String username) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM bookings WHERE username=? AND checked_in=?;");
+		ps1.setString(1, username);
+		ps1.setString(2, "YES");
+		ResultSet rs1 = ps1.executeQuery();
+		int number_of_rows=0;
+		while(rs1.next())
+		{
+			number_of_rows++;
+		}
+		rs1.close();
+		String[] trips = new String[number_of_rows];
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM bookings WHERE username=? AND checked_in=?;");
+		ps.setString(1, username);
+		ps.setString(2, "YES");
+		ResultSet rs = ps.executeQuery();
+		int trips_num = 0;
+		while(rs.next())
+		{
+			trips[trips_num] = "Origin: "+rs.getString("origin")+" Destination: "+rs.getString("destination")
+			+" Date: "+rs.getString("ddate");
+			trips_num++;
+		
+		} 
+		System.out.println(Arrays.asList(trips));
+		return "" + Arrays.asList(trips);
+	}
+	
+	
+	
+	
+	
+	@POST
+	@Path("/MakeComment/{username}/{comment}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String makeComment(@PathParam("username") String username,
+			@PathParam("comment") String comment) throws SQLException, ClassNotFoundException
+	{
+		comment = comment.replaceAll("\\+"," ");
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO comments (username, comment) VALUES (?,?)");
+		ps.setString(1,username);
+		ps.setString(2,comment);
+		ps.executeUpdate();
+		return "Thank you for your comment "+username+" !";
+	}
+	
+	
+	
+	
+	
+	@GET
+	@Path("/ShowComments")
+	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces("text/plain")
+	public String showComments() throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps1 = conn.prepareStatement("SELECT username,comment FROM comments;");
+		ResultSet rs1 = ps1.executeQuery();
+		int number_of_rows=0;
+		while(rs1.next())
+		{
+			number_of_rows++;
+		}
+		rs1.close();
+		String[] comments = new String[number_of_rows];
+		PreparedStatement ps = conn.prepareStatement("SELECT username,comment FROM comments;");
+		ResultSet rs = ps.executeQuery();
+		int comments_num = 0;
+		while(rs.next())
+		{
+			comments[comments_num] = "Username: "+rs.getString("username")+" Comment: "+rs.getString("comment");
+			comments_num++;
+		
+		} 
+		System.out.println(Arrays.asList(comments));
+		return "" + Arrays.asList(comments);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -645,6 +746,19 @@ public class AmericanAirlines {
 	
 	
 	
+	@DELETE
+	@Path("/RemoveComment/{commentID}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removeComment(@PathParam("commentID") int commentID) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM comments WHERE comment_id=?");
+		ps.setInt(1,commentID);
+		ps.executeUpdate();
+		return "The comment with the ID "+commentID+" was successfully removed.";
+	}
 	
 	
 	

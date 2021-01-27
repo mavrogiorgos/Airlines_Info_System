@@ -176,9 +176,6 @@
 <!-- Header -->
 <header class="w3-display-container w3-content w3-wide" style="max-width:100%;" id="home">
   <img class="w3-image" src="Images/american.jpg" alt="Health" width="100%" height="auto">
-  <div class="w3-display-middle w3-margin-top w3-center">
-    <h1 class="w3-xxlarge "><span class="w3-padding w3-white w3-text-red w3-opacity-min"><b>A</b>merican<span class="w3-text-midnight"><b>A</b>irlines</span></span> </h1>
-  </div>
 </header>
 
 

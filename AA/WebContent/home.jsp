@@ -10,6 +10,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="home.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <head>
   <link rel="icon" href="Images/logo.jpg" type="image/gif">
   
@@ -91,7 +93,29 @@
 	#more2 {display: none;}
 	#more3 {display: none;}
 
-
+	#lala {
+		padding:10px;
+	    color: rgb(0,26,51);
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    font-size: 1em;
+	    height: 10%;
+	    width:20%;
+	    background-image: linear-gradient(to right top, #99bbcb, #a5c7d7, #b1d4e2, #bde0ee, #c9edfa);
+	}
+	
+	
+	#lala.sunny {
+	    background-image: linear-gradient(to right top, #ff4e50, #ff713e, #ff932b, #ffb41d, #f9d423);
+	}
+	#lala.cloudy {
+	    background-image: linear-gradient(to right top, #63747c, #71858e, #7f96a0, #8da8b2, #9bbac5);
+	}
+	#lala.rainy {
+	    background-image: linear-gradient(to right top, #637c7b, #718e8c, #7ea09e, #8db2b0, #9bc5c3);
+	}
+	
 	.form-inline {
 	  display: flex;
 	  flex-flow: row wrap;
@@ -127,7 +151,7 @@
   
 </head>
 <script type="text/javascript">var username = 0;</script>
-<body onload="signedIn()">
+<body onload="signedIn();getLocation();">
 
 <!-- Navbar (sit on top) -->
 <div class="w3-top w3-midnight w3-padding w3-card">
@@ -184,6 +208,12 @@
     </span> 
   </div>
 </header>
+
+
+
+
+
+
 
 
 
@@ -320,59 +350,68 @@
 
   
 
-  <!-- News Section -->
-<div class="w3-container w3-padding-32" id="news">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">News</h3>
-    <div>
-		<div class="w3-row-padding ">
-		<!-- All the news, starting from the newest to the oldest -->
-			<div class="w3-col 14 m4 w3-margin-bottom">
-			  <img src="Images/kickoff.png" style="width:100%">
-			  <h3>Αρχική συνάντηση</h3>
-			  <p class="w3-opacity">10/07/2020</p>
-			  <p style=" text-align: justify; text-justify: inter-word;">Πραγματοποιήθηκε με επιτυχία το kick-off meeting του beHEALTHIER, με συμμετοχή όλων των φορέων. Συζητήθηκαν βασικά ζητήματα που αφορούν το έργο,
-					όπως το project coordination και το technical coordination. Δόθηκαν<span id="dots1">...</span><span id="more1"> κατευθύνσεις οι οποίες καθορίζουν την άριστη συνεργασία μεταξύ των φορέων.
-					Τέλος, ορίστικαν με σαφήνεια οι στόχοι που καλείται να επιτύχει το έργο.</span> 					
-				</p>
-				<a onclick="showMore1()" id="myBtn1" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer;">Περισσότερα</a>
-			</div>
-			<!--
-			<div class="w3-col 14 m4 w3-margin-bottom">
-			  <img src="Images/kickoff.png" style="width:100%">
-			  <h3>Αρχική συνάντηση</h3>
-			  <p class="w3-opacity">10/07/2020</p>
-			  <p style=" text-align: justify; text-justify: inter-word;">Πραγματοποιήθηκε με επιτυχία το kick-off meeting του beHEALTHIER, με συμμετοχή όλων των φορέων. Συζητήθηκαν βασικά ζητήματα που αφορούν το έργο,
-					όπως το project coordination και το technical coordination. Δόθηκαν<span id="dots2">...</span><span id="more2"> κατευθύνσεις οι οποίες καθορίζουν την άριστη συνεργασία μεταξύ των φορέων.
-					Τέλος, ορίστικαν με σαφήνεια οι στόχοι που καλείται να επιτύχει το έργο.Πραγματοποιήθηκε με επιτυχία το kick-off meeting του beHEALTHIER, με συμμετοχή όλων των φορέων. Συζητήθηκαν βασικά ζητήματα που αφορούν το έργο,
-					όπως το project coordination και το technical coordination. Δόθηκαν κατευθύνσεις οι οποίες καθορίζουν την άριστη συνεργασία μεταξύ των φορέων.
-					Τέλος, ορίστικαν με σαφήνεια οι στόχοι που καλείται να επιτύχει το έργο. Πραγματοποιήθηκε με επιτυχία το kick-off meeting του beHEALTHIER, με συμμετοχή όλων των φορέων. Συζητήθηκαν βασικά ζητήματα που αφορούν το έργο,
-					όπως το project coordination και το technical coordination. Δόθηκαν κατευθύνσεις οι οποίες καθορίζουν την άριστη συνεργασία μεταξύ των φορέων.
-					Τέλος, ορίστικαν με σαφήνεια οι στόχοι που καλείται να επιτύχει το έργο.</span> 	
-				</p>
-				<a onclick="showMore2()" id="myBtn2" class="w3-red w3-padding w3-hover-midnight">Περισσότερα</a>
-			</div>
-			<div class="w3-col 14 m4 w3-margin-bottom">
-			  <img src="Images/kickoff.png" style="width:100%">
-			  <h3>Αρχική συνάντηση</h3>
-			  <p class="w3-opacity">10/07/2020</p>
-			  <p style=" text-align: justify; text-justify: inter-word;">Πραγματοποιήθηκε με επιτυχία το kick-off meeting του beHEALTHIER, με συμμετοχή όλων των φορέων. Συζητήθηκαν βασικά ζητήματα που αφορούν το έργο,
-					όπως το project coordination και το technical coordination. Δόθηκαν<span id="dots3">...</span><span id="more3"> κατευθύνσεις οι οποίες καθορίζουν την άριστη συνεργασία μεταξύ των φορέων.
-					Τέλος, ορίστικαν με σαφήνεια οι στόχοι που καλείται να επιτύχει το έργο.Πραγματοποιήθηκε με επιτυχία το kick-off meeting του beHEALTHIER, με συμμετοχή όλων των φορέων. Συζητήθηκαν βασικά ζητήματα που αφορούν το έργο,
-					όπως το project coordination και το technical coordination. Δόθηκαν κατευθύνσεις οι οποίες καθορίζουν την άριστη συνεργασία μεταξύ των φορέων.
-					Τέλος, ορίστικαν με σαφήνεια οι στόχοι που καλείται να επιτύχει το έργο. Πραγματοποιήθηκε με επιτυχία το kick-off meeting του beHEALTHIER, με συμμετοχή όλων των φορέων. Συζητήθηκαν βασικά ζητήματα που αφορούν το έργο,
-					όπως το project coordination και το technical coordination. Δόθηκαν κατευθύνσεις οι οποίες καθορίζουν την άριστη συνεργασία μεταξύ των φορέων.
-					Τέλος, ορίστικαν με σαφήνεια οι στόχοι που καλείται να επιτύχει το έργο.</span>  	
-				</p>
-				<a onclick="showMore3()" id="myBtn3" class="w3-red w3-padding w3-hover-midnight">Περισσότερα</a>
-			</div>
-			-->
-		</div>
-		<br>
-	</div>
-  </div>
+  
+    
+    <div style="text-align: center; position:fixed; bottom:10px; right:0; display:none" id="tweets">
+    <a class="twitter-timeline" data-width="400" data-height="400" data-theme="light" href="https://twitter.com/AmericanAir?ref_src=twsrc%5Etfw">Tweets by AmericanAir</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
+  	<button style="position:fixed; bottom:0; right:0; padding: 2; border: none; background-color: midnightblue; color:white;" onclick="tweets()">Twitter <i class="fa fa-twitter"></i></button>
+	<button style="position:fixed; bottom:0; left:0; padding: 2; border: none; background-color: midnightblue; color:white;" onclick="showlala()">Weather <i class="fa fa-cloud"></i></button>
 
-<!-- End page content -->
-</div>
+
+<div id="lala" style="display:none;">
+  <div class="bg"></div>
+	<div>
+    <div id="description"></div>
+    <div id="temp"></div>
+    <div id="location"></div>
+  </div>
+  </div>
+  <script type="text/javascript">
+	  const key = '7ff70ce381b8c8194b27b370ae2efdc6';
+	  if(key=='') document.getElementById('temp').innerHTML = ('Remember to add your api key!');
+	
+	  function weatherBallon(lat,lon) {
+	  	fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat+ '&lon=' + lon+ '&appid=' + key)  
+	  	.then(function(resp) { return resp.json() }) // Convert data to json
+	  	.then(function(data) {
+	  		drawWeather(data);
+	  	})
+	  	.catch(function() {
+	  		// catch any errors
+	  	});
+	  }
+	  function drawWeather( d ) {
+	    var celcius = Math.round(parseFloat(d.main.temp)-273.15);
+	  	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+	    var description = d.weather[0].description; 
+	  	
+	  	document.getElementById('description').innerHTML = "<i class='fa fa-binoculars'></i> "+description;
+	  	document.getElementById('temp').innerHTML = "<i class='fa fa-thermometer'></i> "+ celcius + '&deg;';
+	  	document.getElementById('location').innerHTML = "<i class='fa fa-map-marker'></i> "+ d.name;
+	    
+	    if( description.indexOf('rain') > 0 ) {
+	    	document.body.className = 'rainy';
+	    } else if( description.indexOf('cloud') > 0 ) {
+	    	document.body.className = 'cloudy';
+	    } else if( description.indexOf('sunny') > 0 ) {
+	    	document.body.className = 'sunny';
+	    } else {
+	    	document.body.className = 'clear';
+	    }
+	  }
+	  function getLocation() {
+		  if (navigator.geolocation) {
+		    navigator.geolocation.getCurrentPosition(showPosition);
+		  } else { 
+		    x.innerHTML = "Geolocation is not supported by this browser.";
+		  }
+		}
+	  function showPosition(position) {
+	  	weatherBallon(position.coords.latitude, position.coords.longitude);
+	  }
+  </script>
+
 
 
 <!-- Footer -->
@@ -511,7 +550,23 @@ function signedIn() {
 	  }
 	}
 	
+	function tweets() {
+		  var x = document.getElementById("tweets");
+		  if (x.style.display === "none") {
+		    x.style.display = "block";
+		  } else {
+		    x.style.display = "none";
+		  }
+		}
 	
+	function showlala() {
+		  var x = document.getElementById("lala");
+		  if (x.style.display === "none") {
+		    x.style.display = "block";
+		  } else {
+		    x.style.display = "none";
+		  }
+		}
 	
 </script>
 

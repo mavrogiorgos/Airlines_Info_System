@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="UTF-8"%>
+<%@ page language="java"%>
     <%@ page import ="com.sun.jersey.api.client.Client" %>
 <%@ page import ="com.sun.jersey.api.client.ClientResponse" %>
 <%@ page import ="com.sun.jersey.api.client.WebResource" %>
@@ -10,6 +9,7 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.Arrays" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <title>My Trips | American Airlines</title>
@@ -99,6 +99,46 @@
 	#more2 {display: none;}
 	#more3 {display: none;}
 
+
+
+	.overlay {
+	  position: absolute;
+	  bottom: 0;
+	  left: 0;
+	  right: 0;
+	  background-color: rgb(0,12,24);
+	  overflow: hidden;
+	  width: 100%;
+	  height: 100%;
+	  -webkit-transform: scale(0);
+	  -ms-transform: scale(0);
+	  transform: scale(0);
+	  -webkit-transition: .3s ease;
+	  transition: .3s ease;
+	  opacity:0.8;
+	}
+	
+	.container1 {
+	  position: relative;
+	}
+	
+	.container1:hover .overlay {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+	}
+	
+	.text {
+	  color: white;
+	  font-size: 200%;
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  -webkit-transform: translate(-50%, -50%);
+	  -ms-transform: translate(-50%, -50%);
+	  transform: translate(-50%, -50%);
+	  text-align: center;
+	}
 
 	.form-inline {
 	  display: flex;
@@ -222,6 +262,9 @@ span.price {
 	  table{
   	  width:100%;
 	}
+	#comms{
+	width:100%;
+	}
 
 
 
@@ -263,17 +306,14 @@ span.price {
 
 <!-- Header -->
 <header class="w3-display-container w3-content w3-wide" style="max-width:100%;" id="home">
-  <img class="w3-image" src="Images/american.jpg" alt="Health" width="100%" height="auto">
-  <div class="w3-display-middle w3-margin-top w3-center">
-    <h1 class="w3-xxlarge "><span class="w3-padding w3-white w3-text-red w3-opacity-min"><b>A</b>merican<span class="w3-text-midnight"><b>A</b>irlines</span></span> </h1>
-  </div>
+  <img class="w3-image" src="Images/american.jpg" alt="AA" width="100%" height="auto">
 </header>
 
 
 <div id="signed_in" style="display:none;" >
 
 					
-<div class="w3-container w3-padding-32">
+<div class="w3-container w3-padding-32" style="background-color:rgb(255, 230, 230);color:black;">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Show Boarding Number</h3>
     
 		<form METHOD="post" class="form-inline">
@@ -307,7 +347,99 @@ span.price {
 </div> 
 
 
+
+
+					
+<div class="w3-container w3-padding-32" style="background-color:rgb(230, 249, 255)">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Show My Trips</h3>
+    
+		<form METHOD="post" class="form-inline">
+			Username: <input type="text" name="username" id ="username2" value="" readonly="readonly" required>
+			<input type ="submit" name="ShowMyTrips" value ="Show me" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		 
+		<table style="background-color:rgb(255, 230, 230); color:black;" >
+		<br> 
+		<%
+			if(request.getParameter("ShowMyTrips") != null)
+			{		
+				String username = request.getParameter("username");
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/ShowTrips/"+username);
+				ClientResponse myresponse = webresource.accept("text/plain").get(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				List<String> tripsList = Arrays.asList(output.split(","));
+				%><th>This is where we have flown together</th><%
+				for (int i=0; i<tripsList.size(); i++)
+				{
+					%><tr><td><%out.print(tripsList.get(i).replace("[","").replace("]",""));%><tr><td><%
+					
+				}
+				%>
+				<div class="container1">
+				<img  src="Images/aa_trip.jpg" width="100%" height="auto">
+				<div class="overlay">
+				<div class="text">Thank you for <br>being a part of<br><b>our family &#128151;</b></div> 
+				 </div>   
+				  </div>
+				<%
+			}
+		%>
+		</table>
+</div> 
+
+
+
+
+<div class="w3-container w3-padding-32" style="background-color:rgb(230, 249, 255)">
+    
+		<form METHOD="post" class="form-inline" id="commentform">
+			Username: <input type="text" name="username" id ="username3" value="" readonly="readonly" required>
+			Comment: <input type="text" name="comment"  value="" required>
+			<input type ="submit" name="makeComment" value ="Make Comment" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		
+		<table style="background-color:rgb(255, 230, 230); color:black;" >
+		<br> 
+		<%
+			if(request.getParameter("makeComment") != null)
+			{		
+				String username = request.getParameter("username");
+				String comment = request.getParameter("comment");
+				comment = comment.replaceAll("\\s+","\\+");
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/MakeComment/"+username+"/"+
+						comment);
+				ClientResponse myresponse = webresource.accept("text/plain").post(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
+
+
+
+<marquee id="comms" style="display:none;width:20%; height:20%; position:fixed; bottom:10%; right:0; background-color:midnightblue; padding:10px; color:white;" 
+direction="up" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="2">
+<% 
+  	Client client10 = Client.create();
+	WebResource webresource10 = client10.resource("http://localhost:8080/AA/rest/AAService/ShowComments");
+	ClientResponse myresponse10 = webresource10.accept("text/plain").get(ClientResponse.class);
+	String output10 = myresponse10.getEntity(String.class);
+	List<String> commsList = Arrays.asList(output10.split(","));
+	
+	for (int i=0; i<commsList.size(); i++)
+	{
+		out.print(commsList.get(i).replace("[","").replace("]",""));
+		%><br><% 
+		
+	}
+%>
+</marquee>
+
  
+ <button style="position:fixed; bottom:0; right:0; padding: 2; border: none; background-color: midnightblue; color:white;" onclick="showComms()"><i class="fa fa-comment"></i> Comments </button>
 	
   
 
@@ -457,6 +589,8 @@ function setCookie(cname,cvalue,exdays) {
 	  var destination=getCookie("destination");
 	  if (user != "") {
 		 document.getElementById('username').value=user;
+		 document.getElementById('username2').value=user;
+		 document.getElementById('username3').value=user;
 	  } 
 	  if(cost != "")
 	  {
@@ -471,6 +605,15 @@ function setCookie(cname,cvalue,exdays) {
 		document.getElementById('destination').value=destination;
 	  }
 	}
+	
+	function showComms() {
+		  var x = document.getElementById("comms");
+		  if (x.style.display === "none") {
+		    x.style.display = "block";
+		  } else {
+		    x.style.display = "none";
+		  }
+		}
 	
 	
 </script>
