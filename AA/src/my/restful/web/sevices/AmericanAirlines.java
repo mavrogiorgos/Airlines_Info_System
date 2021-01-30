@@ -448,11 +448,12 @@ public class AmericanAirlines {
 	
 	
 	@POST
-	@Path("/Checkin/{username}/{date}/{origin}/{destination}")
+	@Path("/Checkin/{username}/{date}/{origin}/{destination}/{seat_num}")
 	@Produces(MediaType.TEXT_PLAIN)
 	//@Produces("text/plain")
 	public String checkin(@PathParam("username") String username,@PathParam("date") String date
-			,@PathParam("origin") String origin,@PathParam("destination") String destination) throws SQLException, ClassNotFoundException, ParseException 
+			,@PathParam("origin") String origin,@PathParam("destination") String destination
+			,@PathParam("seat_num") String seat_num) throws SQLException, ClassNotFoundException, ParseException 
 	{
 		//create boarding number to return if check in is successful
 		char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
@@ -491,7 +492,13 @@ public class AmericanAirlines {
 				ps2.setString(5, origin);
 				ps2.setString(6, destination);
 				ps2.executeUpdate();
-		        return "Your check in is successfull. Your boarding number is "+sb.toString()+". It will be available in My Trips section in case you forget it.";
+				PreparedStatement ps3 = conn.prepareStatement("UPDATE seats SET booked=?, username=?, book_date=? WHERE seat_num=?");
+		    	ps3.setString(1, "YES");
+		    	ps3.setString(2, username);
+		    	ps3.setString(3, date);
+		    	ps3.setString(4, seat_num);
+		    	ps3.executeUpdate();
+		        return "Your check in is successfull. Your boarding number is "+sb.toString()+" and you booked the seat "+seat_num+". It will be available in My Trips section in case you forget it.";
 		    }
 		    else return "You either have not booked this flight or you have already checked in. Please check your booked flights.";
 		}
@@ -758,6 +765,47 @@ public class AmericanAirlines {
 		ps.setInt(1,commentID);
 		ps.executeUpdate();
 		return "The comment with the ID "+commentID+" was successfully removed.";
+	}
+	
+	
+	
+	
+	
+	@PUT 
+	@Path("/ResetSeats/{date}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String resetSeats(@PathParam("date") String date) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("UPDATE seats SET booked=?, username=?, book_date=? WHERE book_date=?");
+		ps.setString(1,"NO");
+		ps.setString(2,null);
+		ps.setString(3,null);
+		ps.setString(4,date);
+		ps.executeUpdate();
+		return "The seats status booked on "+date+" was set to NO";
+	}
+	
+	
+	
+	
+	@PUT 
+	@Path("/SpecificSeatReset/{seat_num}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String specificSeatReset(@PathParam("seat_num") String seat_num) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("UPDATE seats SET booked=?, username=?, book_date=? WHERE seat_num=?");
+		ps.setString(1,"NO");
+		ps.setString(2,null);
+		ps.setString(3,null);
+		ps.setString(4,seat_num);
+		ps.executeUpdate();
+		return "The seat's status with the number "+seat_num+" was set to NO";
 	}
 	
 	

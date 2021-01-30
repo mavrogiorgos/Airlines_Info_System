@@ -154,20 +154,17 @@
 	    <div id="menu"></div>
 		<div id="menu"></div>
 		<div id="menu"></div>
-		<div id="menu"></div>
 		<i class="fa fa-caret-down"></i>
 	  </button>
 	  <div class="dropdown-content w3-hide-large w3-hide-medium" id="myDropdown" style="right:0">
 		<a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
 		<a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
 		<a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-		<a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
 	  </div>
 	  <div class="w3-right w3-hide-small">
 	  <a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
 	  <a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
       <a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-      <a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
     </div>
     </div> 
   

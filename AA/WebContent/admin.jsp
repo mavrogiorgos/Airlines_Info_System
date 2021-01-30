@@ -227,6 +227,57 @@
 
 
 <div class="w3-container w3-padding-32">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Reset Seats Booked Status</h3>
+		<form METHOD="post" class="form-inline">
+			Date: <input type="text" name="date" value="" placeholder="dd-mm-yyyy" pattern="\d{1,2}-\d{1,2}-\d{4}" maxlength="10" required>
+			<input type ="submit" name="resetSeats" value ="Reset" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		<table>
+		<br>
+		<%
+			if(request.getParameter("resetSeats") != null)
+			{
+				String date = request.getParameter("date");	
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/ResetSeats/"+date);
+				ClientResponse myresponse = webresource.accept("text/plain").put(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
+
+
+
+<div class="w3-container w3-padding-32">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Reset Specific Booked Seat Status</h3>
+		<form METHOD="post" class="form-inline">
+			Seat Number: <input type="text" name="seat_num" value="" maxlength="3" size="3" required>
+			<input type ="submit" name="specificReset" value ="Reset status" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		<table>
+		<br>
+		<%
+			if(request.getParameter("specificReset") != null)
+			{
+				String seat_num = request.getParameter("seat_num");	
+				Client client15 = Client.create();
+				WebResource webresource15 = client15.resource("http://localhost:8080/AA/rest/AAService/SpecificSeatReset/"+seat_num);
+				ClientResponse myresponse15 = webresource15.accept("text/plain").put(ClientResponse.class);
+				String output = myresponse15.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
+
+
+
+
+
+
+<div class="w3-container w3-padding-32">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Add Announcement</h3>
 		<form METHOD="post" class="form-inline">
 			Name: <input type="text" name="aname" value="" required>

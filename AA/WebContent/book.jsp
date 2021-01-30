@@ -264,20 +264,17 @@ span.price {
 	    <div id="menu"></div>
 		<div id="menu"></div>
 		<div id="menu"></div>
-		<div id="menu"></div>
 		<i class="fa fa-caret-down"></i>
 	  </button>
 	  <div class="dropdown-content w3-hide-large w3-hide-medium" id="myDropdown" style="right:0">
 		<a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
 		<a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
 		<a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-		<a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
 	  </div>
 	  <div class="w3-right w3-hide-small">
 	  <a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
 	  <a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
       <a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-      <a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
     </div>
     </div> 
   
@@ -451,44 +448,6 @@ span.price {
 	
 	</div> 
 
-
-
-
-					
-					
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Show AA fleet</h3>
-    
-		<form METHOD="post">
-			By clicking this button, you may see all the aircrafts that we operate. 
-			<input type ="submit" name="ShowFleet" value ="Show fleet" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
-		</form>	
-		 
-		<table>
-		<br> 
-		<%
-			if(request.getParameter("ShowFleet") != null)
-			{		
-				Client client = Client.create();
-				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/ShowFleet");
-				ClientResponse myresponse = webresource.accept("text/plain").get(ClientResponse.class);
-				String output = myresponse.getEntity(String.class);
-				List<String> fleetList = Arrays.asList(output.split(","));
-				%><th>Aircraft information</th><%
-				for (int i=0; i<fleetList.size(); i++)
-				{
-					%><tr><td><%out.print(fleetList.get(i).replace("[","").replace("]",""));%><tr><td><%
-					
-				}
-				
-			}
-		%>
-		</table>
-</div> 
-
-
- 
-	
   
 
 

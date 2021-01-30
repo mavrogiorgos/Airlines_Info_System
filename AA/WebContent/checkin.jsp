@@ -264,20 +264,17 @@ span.price {
 	    <div id="menu"></div>
 		<div id="menu"></div>
 		<div id="menu"></div>
-		<div id="menu"></div>
 		<i class="fa fa-caret-down"></i>
 	  </button>
 	  <div class="dropdown-content w3-hide-large w3-hide-medium" id="myDropdown" style="right:0">
 		<a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
 		<a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
 		<a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-		<a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
 	  </div>
 	  <div class="w3-right w3-hide-small">
 	  <a href="mailto:kostismvg@gmail.com" class="w3-bar-item w3-hover-red w3-button">Contact us</a>
 	  <a href="home.jsp#about" class="w3-bar-item w3-hover-red w3-button">About</a>
       <a href="home.jsp#actions" class="w3-bar-item w3-hover-red w3-button">Actions</a>
-      <a href="home.jsp#news" class="w3-bar-item w3-hover-red w3-button">News</a>
     </div>
     </div> 
   
@@ -291,6 +288,16 @@ span.price {
 
 <div id="signed_in" style="display:none;" >
 
+<script>
+	function origin()
+	{
+		var seat_num1 = document.getElementById("seat_num");
+		var seat_num = seat_num1.value;
+		document.getElementById("seat_num").value = seat_num;
+		alert("lala");
+	}
+	</script>
+
 					
 <div class="w3-container w3-padding-32">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Check in</h3>
@@ -300,7 +307,25 @@ span.price {
 			Date: <input type="text" name="date" value="" placeholder="dd-mm-yyyy" pattern="\d{1,2}-\d{1,2}-\d{4}" maxlength="10" required>
 			Origin Airport: <input type="text" name="origin" value="" maxlength=3 required>
 			Destination Airport: <input type="text" name="destination" value="" maxlength=3 required>
-			<input type ="submit" name="Checkin" value ="Check in" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+	        <select name="seat_num" id = "seat_num" onchange="origin();" required>
+			<%
+			String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+			String DB_URL = "jdbc:mysql://localhost/aa?autoReconnect=true&useSSL=false";
+			String USER ="kostis";
+			String PASS ="";
+			Connection conn = null;
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			PreparedStatement ps5 = conn.prepareStatement("SELECT seat_num FROM seats WHERE booked='NO';");
+			ResultSet rs5 = ps5.executeQuery();
+			while(rs5.next())
+			{
+				%><option value="<%out.print(rs5.getString("seat_num"));%>"><%out.print(rs5.getString("seat_num"));%></option><%
+			}
+			
+			%>
+			</select>
+			<input type ="submit" name="Checkin" value ="Check in" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">    
 		</form>	
 		 
 		<table>
@@ -312,9 +337,10 @@ span.price {
 				String date = request.getParameter("date");
 				String origin = request.getParameter("origin");
 				String destination = request.getParameter("destination");
+				String seat_num = request.getParameter("seat_num");
 				Client client = Client.create();
 				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/Checkin/"+username+"/"+
-						date+"/"+origin+"/"+destination);
+						date+"/"+origin+"/"+destination+"/"+seat_num);
 				ClientResponse myresponse = webresource.accept("text/plain").post(ClientResponse.class);
 				String output = myresponse.getEntity(String.class);
 				out.print(output);
