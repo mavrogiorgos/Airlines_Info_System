@@ -272,8 +272,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
  /*--------------------------------------------------------*/ 
   
   
-  
-  
+
   
   
   
@@ -366,7 +365,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 	  vertical-align: middle;
 	  margin: 5px 10px 5px 0;
 	  padding: 10px;
-	  background-color: #fff;
+	  background-color: #A3BFD4;
 	  border: 1px solid #ddd;
 	}
 	
@@ -382,7 +381,14 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
   	  width:60%;
 	}
 	
-	
+	select {
+	  width: 100%;
+	  margin-bottom: 20px;
+	  padding: 12px;
+	  border: 1px solid #ccc;
+	  border-radius: 3px;
+	  background-color:#97b7cc;
+	}
 	
 	@media (max-width: 800px) {
 	  .form-inline input {
@@ -425,7 +431,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 
   	<div id="signed_in" style="display:none;" >
-    <div class="w3-container w3-padding-32">
+    <div class="w3-container w3-padding-32" style="background-color:#7e2d36; color:white;">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Add route</h3>
 		<form METHOD="post" class="form-inline">
 			Origin Airport: <input type="text" name="origin" value="" size=3 maxlength=3 required>
@@ -456,11 +462,44 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 	
 
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Remove route</h3>
+<div class="w3-container w3-padding-32" style="background-color:#7e2d36; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Remove route</h3>
 		<form METHOD="post" class="form-inline">
-			Origin Airport: <input type="text" name="origin" value="" size=3 maxlength=3 required>
-			Destination Airport: <input type="text" name="destination" value="" size=3 maxlength=3 required>
+			<!--  Origin Airport: <input type="text" name="origin" value="" maxlength=3 required> -->
+			<label for="origin_airport"><i class="fa fa-plane"></i> Origin Airport</label>
+			<select name="origin" id = "origin" required>
+			<%
+			Client client99 = Client.create();
+			WebResource webresource99 = client99.resource("http://localhost:8080/AA/rest/AAService/AvailableAirports");
+			ClientResponse myresponse99 = webresource99.accept("text/plain").get(ClientResponse.class);
+			String output99 = myresponse99.getEntity(String.class);
+			List<String> airportsList = Arrays.asList(output99.split(","));
+			for (int i=0; i<airportsList.size(); i++)
+			{
+				%><option value="<%out.print(airportsList.get(i).replace("[","").replace("]",""));%>"><%out.print(airportsList.get(i).replace("[","").replace("]",""));%></option><%	
+			}
+			%>
+			</select>
+			<!--  Destination Airport: <input type="text" name="destination" value="" maxlength=3 required> -->
+			<label for="destination_airport"><i class="fa fa-plane"></i> Destination Airport</label>
+			<select name="destination" id = "destination" required>
+			<%
+			String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+			String DB_URL = "jdbc:mysql://localhost/aa?autoReconnect=true&useSSL=false";
+			String USER ="kostis";
+			String PASS ="";
+			Connection conn = null;
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT Destination_airport FROM routes;");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+			{
+				%><option value="<%out.print(rs.getString("Destination_airport"));%>"><%out.print(rs.getString("Destination_airport"));%></option><%
+			}
+			
+			%>
+			</select>
 			<input type ="submit" name="removeRoute" value ="Remove Route" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
 		</form>	
 		<table>
@@ -468,8 +507,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 		<%
 			if(request.getParameter("removeRoute") != null)
 			{
-				String origin = request.getParameter("origin");
-				String destination = request.getParameter("destination");	
+				String origin = request.getParameter("origin").replaceAll("\\s+","");;
+				String destination = request.getParameter("destination").replaceAll("\\s+","");;	
 				Client client = Client.create();
 				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/RemoveRoute/"+origin+"/"+
 						destination);
@@ -483,8 +522,40 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 
 
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Reset Seats Booked Status</h3>
+
+
+<div class="w3-container w3-padding-32" style="background-color:#023C6E; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Add Seat</h3>
+		<form METHOD="post" class="form-inline">
+			Seat number: <input type="text" name="seat_num" value="" maxlength="3" size="3" required>
+			<input type ="submit" name="addSeat" value ="Add Seat" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
+		</form>	
+		<table>
+		<br>
+		<%
+			if(request.getParameter("addSeat") != null)
+			{
+				String seat_num = request.getParameter("seat_num");	
+				Client client = Client.create();
+				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/AddSeat/"+seat_num);
+				ClientResponse myresponse = webresource.accept("text/plain").put(ClientResponse.class);
+				String output = myresponse.getEntity(String.class);
+				out.print(output);
+			}
+		%>
+		</table>
+</div> 
+
+
+
+
+
+
+
+
+
+<div class="w3-container w3-padding-32" style="background-color:#023C6E; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Reset Seats Booked Status</h3>
 		<form METHOD="post" class="form-inline">
 			Date: <input type="text" name="date" value="" placeholder="dd-mm-yyyy" pattern="\d{1,2}-\d{1,2}-\d{4}" maxlength="10" required>
 			<input type ="submit" name="resetSeats" value ="Reset" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
@@ -507,8 +578,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 
 
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Reset Specific Booked Seat Status</h3>
+<div class="w3-container w3-padding-32" style="background-color:#023C6E; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Reset Specific Booked Seat Status</h3>
 		<form METHOD="post" class="form-inline">
 			Seat Number: <input type="text" name="seat_num" value="" maxlength="3" size="3" required>
 			<input type ="submit" name="specificReset" value ="Reset status" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
@@ -534,8 +605,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 
 
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Add Announcement</h3>
+<div class="w3-container w3-padding-32" style="background-color:#7e2d36; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Add Announcement</h3>
 		<form METHOD="post" class="form-inline">
 			Name: <input type="text" name="aname" value="" required>
 			Announcement: <input type="text" name="announcement" value="" required>
@@ -560,8 +631,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 </div> 
 
 
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Remove Announcement</h3>
+<div class="w3-container w3-padding-32" style="background-color:#7e2d36; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Remove Announcement</h3>
 		<form METHOD="post" class="form-inline">
 			Name: <input type="text" name="aname" value="" required>
 			<input type ="submit" name="removeAnnouncement" value ="Remove Announcement" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
@@ -585,8 +656,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 
 
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Remove Comment</h3>
+<div class="w3-container w3-padding-32" style="background-color:#023C6E; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Remove Comment</h3>
 		<form METHOD="post" class="form-inline">
 			Comment ID: <input type="number" name="commentID" value="" required>
 			<input type ="submit" name="removeComment" value ="Remove Comment" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
@@ -611,8 +682,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 
 
-<div class="w3-container w3-padding-32">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Promote or Demote a User (types: "simple" or "admin")</h3>
+<div class="w3-container w3-padding-32" style="background-color:#7e2d36; color:white;">
+    <h3 class="w3-border-bottom w3-border-white w3-padding-16">Promote or Demote a User (types: "simple" or "admin")</h3>
 		<form METHOD="post" class="form-inline">
 			Username: <input type="text" name="username" value="" required>
 			New User Type: <input type="text" name="usertype" pattern="^(simple|admin).*$" value="" required>

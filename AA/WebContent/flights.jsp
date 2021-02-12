@@ -4,6 +4,12 @@
 <%@ page import ="com.sun.jersey.api.client.ClientResponse" %>
 <%@ page import ="com.sun.jersey.api.client.WebResource" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.DriverManager" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.util.Arrays" %>
 <!DOCTYPE html>
 <html>
 <title>Flights | American Airlines</title>
@@ -372,6 +378,14 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 	}
 	
 	
+	select {
+	  width: 100%;
+	  margin-bottom: 20px;
+	  padding: 12px;
+	  border: 1px solid #ccc;
+	  border-radius: 3px;
+	  background-color:#97b7cc;
+	}
 	
 	@media (max-width: 800px) {
 	  .form-inline input {
@@ -432,8 +446,31 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
     <div class="w3-container w3-padding-32" style="background-color:#e2e3dd;">
     <h3 class="w3-border-bottom w3-border-black w3-padding-16">Search route</h3>
 		<form METHOD="post" class="form-inline">
-			Origin Airport: <input type="text" name="origin" value="" maxlength=3 required>
-			Destination Airport: <input type="text" name="destination" value="" maxlength=3 required>
+			<!--  Origin Airport: <input type="text" name="origin" value="" maxlength=3 required> -->
+			<label for="origin_airport"><i class="fa fa-plane"></i> Origin Airport</label>
+			<select name="origin" id = "origin" required>
+			<%
+			Client client99 = Client.create();
+			WebResource webresource99 = client99.resource("http://localhost:8080/AA/rest/AAService/AvailableAirports");
+			ClientResponse myresponse99 = webresource99.accept("text/plain").get(ClientResponse.class);
+			String output99 = myresponse99.getEntity(String.class);
+			List<String> airportsList = Arrays.asList(output99.split(","));
+			for (int i=0; i<airportsList.size(); i++)
+			{
+				%><option value="<%out.print(airportsList.get(i).replace("[","").replace("]",""));%>"><%out.print(airportsList.get(i).replace("[","").replace("]",""));%></option><%	
+			}
+			%>
+			</select>
+			<!--  Destination Airport: <input type="text" name="destination" value="" maxlength=3 required> -->
+			<label for="destination_airport"><i class="fa fa-plane"></i> Destination Airport</label>
+			<select name="destination" id = "destination" required>
+			<%
+			for (int i=0; i<airportsList.size(); i++)
+			{
+				%><option value="<%out.print(airportsList.get(i).replace("[","").replace("]",""));%>"><%out.print(airportsList.get(i).replace("[","").replace("]",""));%></option><%	
+			}
+			%>
+			</select>
 			<input type ="submit" name="searchRoute" value ="Search Route" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">
 		</form>	
 		<table>
@@ -441,8 +478,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 		<%
 			if(request.getParameter("searchRoute") != null)
 			{
-				String origin = request.getParameter("origin");
-				String destination = request.getParameter("destination");		
+				String origin = request.getParameter("origin").replaceAll("\\s+","");
+				String destination = request.getParameter("destination").replaceAll("\\s+","");		
 				Client client = Client.create();
 				WebResource webresource = client.resource("http://localhost:8080/AA/rest/AAService/SearchRoute/"+origin+"/"+
 						destination);

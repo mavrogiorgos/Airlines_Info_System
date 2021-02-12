@@ -379,7 +379,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 	  vertical-align: middle;
 	  margin: 5px 10px 5px 0;
 	  padding: 10px;
-	  background-color: #fff;
+	  background-color: #A3BFD4;
 	  border: 1px solid #ddd;
 	}
 	

@@ -189,7 +189,7 @@ public class AmericanAirlines {
 		Connection conn = null;
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
-		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT Source_airport FROM fleet;");
+		PreparedStatement ps_number_of_rows = conn.prepareStatement("SELECT DISTINCT Source_airport FROM routes;");
 		ResultSet rs_number_of_rows = ps_number_of_rows.executeQuery();
 		int number_of_rows=0;
 		while(rs_number_of_rows.next())
@@ -198,7 +198,7 @@ public class AmericanAirlines {
 		}
 		ps_number_of_rows.close();
 		String[] airport = new String[number_of_rows];
-		PreparedStatement ps = conn.prepareStatement("SELECT Source_airport FROM fleet;");
+		PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT Source_airport FROM routes;");
 		ResultSet rs = ps.executeQuery();
 		int airport_num = 0;
 		while(rs.next())
@@ -807,6 +807,27 @@ public class AmericanAirlines {
 		ps.executeUpdate();
 		return "The seat's status with the number "+seat_num+" was set to NO";
 	}
+	
+	
+	
+	
+	@PUT 
+	@Path("/AddSeat/{seat_num}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addSeat(@PathParam("seat_num") String seat_num) throws SQLException, ClassNotFoundException
+	{
+		Connection conn = null;
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO seats (seat_num,booked) VALUES (?,?)");
+		ps.setString(1,seat_num);
+		ps.setString(2,"NO");
+		ps.executeUpdate();
+		return "The seat with the number "+seat_num+" was successfully added.";
+	}
+	
+	
+	
 	
 	
 	

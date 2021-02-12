@@ -271,7 +271,50 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
  /*--------------------------------------------------------*/ 
   
   
-  
+  .checkbox {
+    display: inline-flex;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox > span {
+    color: #34495E;
+    padding: 0.5rem 0.25rem;
+}
+
+.checkbox > input {
+    height: 25px;
+    width: 25px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    border: 1px solid #34495E;
+    border-radius: 4px;
+    outline: none;
+    transition-duration: 0.3s;
+    background-color: rgb(0,13,26);
+    cursor: pointer;
+  }
+
+.checkbox > input:checked {
+    border: 1px solid #41B883;
+    background-color: rgb(78,228,78);
+}
+
+.checkbox > input:checked + span::before {
+    content: '\2713';
+    display: block;
+    text-align: center;
+    color: #41B883;
+    position: absolute;
+    left: 0.7rem;
+    top: 0.2rem;
+}
+
+.checkbox > input:active {
+    border: 2px solid #34495E;
+}
   
   
   
@@ -509,7 +552,7 @@ span.price {
   
   
 </head>
-<body onload="signedIn(); checkCookie();">
+<body onload="signedIn(); checkCookie(); showseat();">
 
 <!-- Navbar (sit on top) -->
 <div class="w3-top w3-midnight w3-padding w3-card">
@@ -563,7 +606,7 @@ span.price {
 			Date: <input type="text" name="date" value="" placeholder="dd-mm-yyyy" pattern="\d{1,2}-\d{1,2}-\d{4}" maxlength="10" required>
 			Origin Airport: <input type="text" name="origin" value="" maxlength=3 required>
 			Destination Airport: <input type="text" name="destination" value="" maxlength=3 required>
-	        Seat: <select name="seat_num" id = "seat_num" onchange="origin();" required style="background-color:#97b7cc;">
+	        Seat: <select name="seat_num" id = "seat_num" onchange="origin();" required style="background-color:#97b7cc;" onclick="showseat();">
 			<%
 			String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 			String DB_URL = "jdbc:mysql://localhost/aa?autoReconnect=true&useSSL=false";
@@ -576,11 +619,17 @@ span.price {
 			ResultSet rs5 = ps5.executeQuery();
 			while(rs5.next())
 			{
-				%><option value="<%out.print(rs5.getString("seat_num"));%>"><%out.print(rs5.getString("seat_num"));%></option><%
+				%><option  value="<%out.print(rs5.getString("seat_num"));%>"><%out.print(rs5.getString("seat_num"));%></option><%
 			}
 			
 			%>
 			</select>
+			<div style="text-align:center;">
+			<span style="padding-right:5%" class="checkbox">1 (Window) <input type="checkbox" id="seat1" name="seat1" value="1" onclick="return false;"></span>
+  			<span style="padding-right:5%" class="checkbox">2<input type="checkbox" id="seat2" name="seat2" value="2" onclick="return false;"></span>
+  			<span style="padding-right:5%" class="checkbox">3<input type="checkbox" id="seat3" name="seat3" value="3" onclick="return false;"></span>
+  			<span style="padding-right:5%" class="checkbox">4<input type="checkbox" id="seat4" name="seat4" value="4" onclick="return false;"></span>
+  			<span class="checkbox">5 (Window) <input type="checkbox" id="seat5" name="seat5" value="5" onclick="return false;"></span></div><br><br>
 			<input type ="submit" name="Checkin" value ="Check in" class="w3-red w3-padding w3-hover-midnight" style="cursor: pointer; border:none;">    
 		</form>	
 		 
@@ -773,6 +822,54 @@ function setCookie(cname,cvalue,exdays) {
 	  }
 	}
 	
+	
+	
+	
+	
+	function showseat()
+	{
+		var seat_num = document.getElementById('seat_num').value;
+		if(seat_num==='1')
+		{
+			document.getElementById("seat1").checked = true;
+			document.getElementById("seat2").checked = false;
+			document.getElementById("seat3").checked = false;
+			document.getElementById("seat4").checked = false;
+			document.getElementById("seat5").checked = false;
+		}
+		if(seat_num==='2')
+		{
+			document.getElementById("seat1").checked = false;
+			document.getElementById("seat2").checked = true;
+			document.getElementById("seat3").checked = false;
+			document.getElementById("seat4").checked = false;
+			document.getElementById("seat5").checked = false;
+		}
+		if(seat_num==='3')
+		{
+			document.getElementById("seat1").checked = false;
+			document.getElementById("seat2").checked = false;
+			document.getElementById("seat3").checked = true;
+			document.getElementById("seat4").checked = false;
+			document.getElementById("seat5").checked = false;
+		}
+		if(seat_num==='4')
+		{
+			document.getElementById("seat1").checked = false;
+			document.getElementById("seat2").checked = false;
+			document.getElementById("seat3").checked = false;
+			document.getElementById("seat4").checked = true;
+			document.getElementById("seat5").checked = false;
+		}
+		if(seat_num==='5')
+		{
+			document.getElementById("seat1").checked = false;
+			document.getElementById("seat2").checked = false;
+			document.getElementById("seat3").checked = false;
+			document.getElementById("seat4").checked = false;
+			document.getElementById("seat5").checked = true;
+		}
+	}
 	
 </script>
 
