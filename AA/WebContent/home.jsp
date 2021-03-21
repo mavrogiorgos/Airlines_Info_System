@@ -785,15 +785,15 @@ function signedIn() {
 	  if(adminCookie==="simple")
 	  {
 		  x.style.display = "block";
-			y.style.display = "block";
 	  }
-	  if(adminCookie==="admin")
+	  else if(adminCookie==="admin")
 	  {
 		x.style.display = "block";
 		y.style.display = "block";
 	  }
 	  else
 	  {
+		  x.style.display = "none";
 		  y.style.display = "none";
 	  }
 	}

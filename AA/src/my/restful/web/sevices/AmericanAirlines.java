@@ -440,6 +440,19 @@ public class AmericanAirlines {
 		}
 		else if(count==0) 
 		{
+			int count2 = 0;
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM users WHERE username=?");
+			ps2.setString(1, username);
+			ResultSet number_of_users2 = ps2.executeQuery();
+			while(number_of_users2.next())
+			{
+				count2++;
+			}
+			System.out.println(count);
+			if(count2==0) 
+			{
+				return "Not a user";
+			}
 			return "simple";
 		}
 		conn.close();
