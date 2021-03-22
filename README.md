@@ -25,6 +25,6 @@ As long as the service performs the action requested by the user, it returns eit
 
 This work aimed to develop an information system that automates a daily realistic process. The theme chosen was that of an airline management system, as these systems are now essential. This is due to the huge demand that now exists for air travel and therefore the need that arises for the creation of systems that will transform the relevant processes, such as ticket purchasing, into processes that are understandable and user-friendly.
 
-Having said that, this work has achieved its goal. A system has been developed that automates air travel processes in a comprehensible and user-friendly way, utilizing a widely used type of web services such as REST. Of course, there is room for improvement.
+Having said that, this work has achieved its goal. A system has been developed that automates air travel processes in a comprehensible and user-friendly way, utilizing a widely used type of web services such as REST.
 Of course, there is room for improvement. In order to be able to use this system in complex use cases of reality, various improvements will have to be made, such as: the addition of more seats and even depending on the aircraft that performs the specific flight, the addition of different types of tickets, the formulation of security policy for personal data of users such as username and password, modification of database tables to include more complete data, etc.
 
